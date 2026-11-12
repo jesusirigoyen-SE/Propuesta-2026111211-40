@@ -1304,30 +1304,28 @@ lang="es">
           <div style="border-top:1px solid var(--black-4);padding-top:22px;margin-top:4px;">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
               <label class="toggle-switch">
-                <input type="checkbox" id="cajero_check" onchange="toggleCajero()">
+                <input type="checkbox" id="cajero_check" onchange="toggleCajero()" checked>
                 <span class="toggle-slider"></span>
               </label>
               <span class="calc-section-label" style="margin-bottom:0;">🏧 Retiros en Cajero Automático</span>
             </div>
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">Activa si el cliente usa cajeros — calcula el ahorro por comisiones eliminadas</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">Tasa por retiro autorizada para ti vs. la tasa estándar de Jeeves de 3%</div>
 
-            <div id="cajero-fields" style="display:none;">
+            <div id="cajero-fields" style="">
               <div class="input-group">
                 <label class="input-label">Gasto mensual en retiros cajero (MXN)</label>
                 <div class="input-row">
                   <span class="input-prefix">$</span>
-                  <input id="gasto_cajeros" class="calc-input blue" type="number" value="0" step="5000" oninput="recalc()">
+                  <input id="gasto_cajeros" class="calc-input blue" type="number" value="300000" step="5000" oninput="recalc()">
                   <span class="input-suffix">MXN/mes</span>
                 </div>
               </div>
 
               <div class="input-group">
-                <label class="input-label">Comisión actual por retiro cajero (%)</label>
-                <div class="input-row">
-                  <input id="comision_caj" class="calc-input blue" type="number" value="0" step="0.1" min="0" max="10" oninput="recalc()">
-                  <span class="input-suffix">%</span>
-                </div>
-                <div class="input-hint">Jeeves elimina esta comisión → ahorro directo anual</div>
+                <label class="input-label">Tasa por retiro en cajero</label>
+                <div style="font-size:13px;line-height:1.7;color:var(--text-secondary);">Tasa estándar Jeeves: <b>3%</b> · Tu tasa: <b style="color:var(--green);">2%</b></div>
+                <input id="comision_caj" type="hidden" value="1">
+                <div class="input-hint">Tasa preferencial: ahorras 1% sobre cada retiro.</div>
               </div>
             </div>
           </div>
@@ -1365,6 +1363,21 @@ lang="es">
                 <div class="result-mxn" id="res_ff_mxn">—</div>
                 <div class="result-mes" id="res_ff_mes"></div>
                 <div class="result-usd" id="res_ff_usd">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Descuento autorizado -->
+          <div class="result-row" id="res_desc_row" style="display:none;">
+            <div class="result-row-top">
+              <div>
+                <div class="result-name">Descuento autorizado</div>
+                <div class="result-sub">10% sobre plataforma y FotoFacturas</div>
+              </div>
+              <div class="result-amounts">
+                <div class="result-mxn green" id="res_desc_mxn">—</div>
+                <div class="result-mes" id="res_desc_mes"></div>
+                <div class="result-usd" id="res_desc_usd">—</div>
               </div>
             </div>
           </div>
@@ -1423,7 +1436,7 @@ lang="es">
             <div class="result-row-top">
               <div>
                 <div class="result-name" id="res_caj_label">Ahorro comisiones cajero</div>
-                <div class="result-sub">Comisión eliminada × gasto anual</div>
+                <div class="result-sub">Diferencia de tasa × retiros del año</div>
               </div>
               <div class="result-amounts">
                 <div class="result-mxn green" id="res_caj_mxn">$0</div>
@@ -1457,8 +1470,7 @@ lang="es">
           </div>
 
           <div style="margin-top:12px;font-size:10px;color:var(--text-muted);line-height:1.6;">
-            * Tipo de cambio configurable. El cashback aplica 6 meses. Los ahorros en cajeros son estimaciones basadas en comisiones actuales del mercado.
-          </div>
+            * Tipo de cambio configurable. El cashback aplica 6 meses. El ahorro en cajeros compara tu tasa autorizada con la tasa estándar de Jeeves de 3% por retiro.</div>
           <div style="margin-top:8px;font-size:10px;color:var(--gold);font-weight:600;letter-spacing:0.04em;">💡 Precio más IVA · Tipo de cambio de referencia</div>
 
           <!-- Precio Competencia VS Jeeves -->
@@ -1634,6 +1646,8 @@ function getPricePerUserUSD(users) {
 }
 var OPENING_FEE_LOCAL = 0; // Opening Fee de Jeeves Pay en moneda local (pago único)
 var CAP_ON = false; // ahorro por automatización de facturas activo
+var DESC_PCT = 10; // descuento autorizado (% sobre plataforma y FotoFacturas, no Opening Fee)
+var CAJ_RATE = 2; // tasa autorizada por retiro en cajero (estándar 3%)
 var CB_PCT = 1; // % de cashback
 var CB_MONTHS_YEAR = 6; // meses de cashback dentro del primer año
 var CREDIT_LINE = 2000000; // línea de crédito preaprobada en moneda local
@@ -1775,7 +1789,7 @@ function hide(id) { var el = document.getElementById(id); if (el) el.style.displ
 function recalc() {
   var tdc      = parseFloat(document.getElementById('tdc').value) || 17.55;
   var users    = parseInt(document.getElementById('usuarios').value) || 1;
-  var desc     = parseFloat(document.getElementById('descuento').value) || 0;
+  var desc     = 0; // el descuento autorizado se muestra aparte (DESC_PCT)
   var gastoMes = parseFloat(document.getElementById('gasto_tarjetas').value) || 0;
   var cajeroActivo = document.getElementById('cajero_check').checked;
   var cajMes   = cajeroActivo ? (parseFloat(document.getElementById('gasto_cajeros').value) || 0) : 0;
@@ -1824,9 +1838,9 @@ function recalc() {
   totalAnoBase += openAno; totalAnoUSDBase += openAno / tdc;
 
   // Payment discount
-  var pagoMult    = 1 - pagoDisc / 100;
-  var totalAno    = totalAnoBase    * pagoMult;
-  var totalAnoUSD = totalAnoUSDBase * pagoMult;
+  var descAno     = (platAno + ffAno) * DESC_PCT / 100; // descuento autorizado: plataforma + FotoFacturas (no Opening Fee)
+  var totalAno    = totalAnoBase    - descAno;
+  var totalAnoUSD = totalAnoUSDBase - descAno / tdc;
   var totalMes    = (totalAno - openAno) / 12;
 
   // Savings
@@ -1891,12 +1905,11 @@ function recalc() {
   } else { hide('res_ff_row'); }
 
   // Payment discount row
-  if (pagoDisc > 0) {
-    show('res_pago_row');
-    setText('res_pago_label_val', pagoDisc + '% OFF (Pago Anual)');
-    setText('res_pago_mxn', '−' + fmxn(totalAnoBase - totalAno) + ' MXN/año');
-    setText('res_pago_usd', '−' + fusd(totalAnoUSDBase - totalAnoUSD) + ' / año');
-  } else { hide('res_pago_row'); }
+  if (descAno > 0) {
+    show('res_desc_row');
+    setText('res_desc_mxn', '−' + fmxn(descAno) + ' MXN/año'); setText('res_desc_mes', '−' + fmxn(descAno / 12) + ' MXN / mes');
+    setText('res_desc_usd', '≈ −' + fusd(descAno / tdc) + ' / año · −' + fusd(descAno / tdc / 12) + ' / mes');
+  } else { hide('res_desc_row'); }
 
   setText('res_total_mxn', fmxn(totalAno) + ' MXN/año');
   setText('res_total_usd', '≈ ' + fusd(totalAnoUSD) + ' / año · ' + fusd((totalAnoUSD - openAno / tdc) / 12) + ' / mes');
@@ -1910,7 +1923,7 @@ function recalc() {
   // Cajero
   if (cajeroActivo && cajAno > 0) {
     show('res_caj_row');
-    document.getElementById('res_caj_label').textContent = 'Ahorro comisiones cajero (' + comCaj + '%)';
+    document.getElementById('res_caj_label').textContent = 'Ahorro en retiros de cajero (tasa ' + CAJ_RATE + '% vs. 3% estándar)';
     setText('res_caj_mxn', fmxn(cajAno) + ' MXN/año'); setMes('res_caj_mes', cajAno);
     setText('res_caj_usd', usd2(cajAnoUSD));
   } else { hide('res_caj_row'); }

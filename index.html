@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html
+lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta Jeeves · Recicla Ambiente</title>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black:   #0A0A0C;
+      --black-2: #111116;
+      --black-3: #18181F;
+      --black-4: #22222B;
+      --gold:        #C9A84C;
+      --gold-light:  #E2C97E;
+      --gold-dim:    rgba(201,168,76,0.10);
+      --gold-border: rgba(201,168,76,0.22);
+      --pacific:        #51ACBC;
+      --pacific-dim:    rgba(81,172,188,0.10);
+      --pacific-border: rgba(81,172,188,0.22);
+      --green:     #4ABCA0;
+      --green-dim: rgba(74,188,160,0.10);
+      --amber:     #D4914A;
+      --amber-dim: rgba(212,145,74,0.10);
+      --red:       #E05555;
+      --text-primary:   #F0EDE6;
+      --text-secondary: #9A9690;
+      --text-muted:     #5A5755;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Urbanist', -apple-system, sans-serif;
+      background: var(--black);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(10,10,12,0.90);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--black-4);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; }
+    .nav-wordmark { font-size: 20px; font-weight: 800; letter-spacing: 0.04em; }
+    .nav-pill {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      background: var(--gold-dim); border: 1px solid var(--gold-border);
+      color: var(--gold); padding: 4px 12px; border-radius: 999px;
+    }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute;
+      top: -100px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(201,168,76,0.13) 0%, transparent 58%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--gold); background: var(--gold-dim); border: 1px solid var(--gold-border);
+      padding: 6px 18px; border-radius: 999px; margin-bottom: 28px; display: inline-block;
+    }
+    .hero h1 {
+      font-size: clamp(46px, 8vw, 92px); font-weight: 900; line-height: 0.95;
+      letter-spacing: -0.03em; margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 60%, var(--pacific) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 19px); color: var(--text-secondary);
+      max-width: 540px; line-height: 1.7; margin-bottom: 52px;
+    }
+    .hero-card-wrap { perspective: 1000px; margin-bottom: 52px; width: 100%; display: flex; justify-content: center; }
+    .hero-card {
+      width: min(380px, 100%); height: auto; min-height: 200px;
+      background: linear-gradient(135deg, #1c1c28 0%, #111116 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: 22px; padding: 28px 32px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.08);
+      transform: perspective(900px) rotateX(6deg) rotateY(-6deg);
+      transition: transform 0.5s ease;
+    }
+    .hero-card:hover { transform: perspective(900px) rotateX(0deg) rotateY(0deg); }
+    .hero-card::before {
+      content: ''; position: absolute; top: -80px; right: -80px;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(201,168,76,0.14) 0%, transparent 65%);
+    }
+    .hc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+    .hc-logo { display: flex; align-items: center; gap: 8px; }
+    .hc-logo-text { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; color: rgba(240,237,230,0.5); }
+    .hc-chip { width: 38px; height: 28px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); border-radius: 5px; }
+    .hc-num { font-size: 16px; font-weight: 500; letter-spacing: 0.22em; color: rgba(240,237,230,0.5); margin-bottom: 20px; }
+    .hc-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+    .hc-name { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--text-primary); }
+    .hc-label-small { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+    .hc-tag {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--gold-dim); border: 1px solid var(--gold-border);
+      color: var(--gold); padding: 4px 10px; border-radius: 6px;
+    }
+    .hero-stats { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+    .hstat {
+      background: var(--black-2); border: 1px solid var(--black-4);
+      border-radius: 14px; padding: 18px 26px; text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .hstat:hover { border-color: var(--gold-border); transform: translateY(-3px); }
+    .hstat-num { font-size: 30px; font-weight: 800; color: var(--gold); line-height: 1; }
+    .hstat-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 5px; }
+
+    /* ── SECTION ── */
+    .section { padding: 96px 24px; border-top: 1px solid var(--black-4); }
+    .section-inner { max-width: 1100px; margin: 0 auto; padding: 0 8px; }
+    .section-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .section-h { font-size: clamp(30px, 4.5vw, 52px); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .section-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.7; max-width: 520px; margin-bottom: 56px; }
+
+    /* ── SCROLL HINT ── */
+    .scroll-hint {
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); animation: bounce 2s infinite;
+    }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+    /* ── PRICING TIERS ── */
+    .tier-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    @media(max-width:900px){ .tier-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:500px){ .tier-grid { grid-template-columns: 1fr; } }
+
+    .tier-card {
+      background: var(--black-2); border: 1px solid var(--black-4);
+      border-radius: 20px; padding: 28px 24px;
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: default;
+    }
+    .tier-card::after {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 180px; height: 180px; border-radius: 50%; pointer-events: none;
+    }
+    .tier-card.t1::after { background: radial-gradient(circle, rgba(81,172,188,0.08) 0%, transparent 70%); }
+    .tier-card.t2::after { background: radial-gradient(circle, rgba(74,188,160,0.08) 0%, transparent 70%); }
+    .tier-card.t3::after { background: radial-gradient(circle, rgba(212,145,74,0.08) 0%, transparent 70%); }
+    .tier-card.t4::after { background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%); }
+    .tier-card.t4 { border-color: var(--gold-border); }
+    .tier-card.t4.active-tier { background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.03) 100%); }
+    .tier-card.active-tier { border-color: var(--gold-border); }
+
+    .tier-badge {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 999px; display: inline-block; margin-bottom: 16px;
+    }
+    .t1 .tier-badge { background: var(--pacific-dim); color: var(--pacific); border: 1px solid var(--pacific-border); }
+    .t2 .tier-badge { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,188,160,0.22); }
+    .t3 .tier-badge { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(212,145,74,0.22); }
+    .t4 .tier-badge { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold-border); }
+
+    .tier-users { font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.4; }
+    .tier-price-mxn { font-size: 32px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; color: var(--text-primary); }
+    .tier-price-unit { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 4px; margin-bottom: 8px; }
+    .tier-price-usd { font-size: 13px; font-weight: 700; color: var(--text-secondary); }
+
+    .tier-ff {
+      margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--black-4);
+      font-size: 12px; color: var(--text-muted);
+    }
+    .tier-ff strong { color: var(--pacific); }
+
+    .active-tier-indicator {
+      position: absolute; top: 16px; right: 16px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--green); display: none;
+      box-shadow: 0 0 8px rgba(74,188,160,0.6);
+      animation: pulse 1.5s infinite;
+    }
+    .active-tier .active-tier-indicator { display: block; }
+
+    /* ── FOTO FACTURAS PACKAGES ── */
+    .ff-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    @media(max-width:600px){ .ff-grid { grid-template-columns: 1fr; } }
+    .ff-card {
+      background: var(--black-2); border: 1px solid var(--black-4);
+      border-radius: 16px; padding: 22px 20px;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative; cursor: pointer;
+    }
+    .ff-card:hover { border-color: var(--pacific-border); transform: translateY(-3px); }
+    .ff-card.ff-active { border-color: var(--pacific-border); background: var(--pacific-dim); }
+    .ff-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .ff-included { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+    .ff-price-mxn { font-size: 26px; font-weight: 900; color: var(--text-primary); line-height: 1; letter-spacing: -0.02em; }
+    .ff-price-detail { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .ff-discount { font-size: 10px; font-weight: 700; background: rgba(74,188,160,0.1); color: var(--green); border: 1px solid rgba(74,188,160,0.2); padding: 2px 8px; border-radius: 999px; display: inline-block; margin-top: 10px; }
+
+    /* ── CALCULATOR ── */
+    .calc-wrapper {
+      background: var(--black-2); border: 1px solid var(--black-4);
+      border-radius: 24px; overflow: hidden;
+    }
+    .calc-header {
+      background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(81,172,188,0.04) 100%);
+      border-bottom: 1px solid var(--black-4);
+      padding: 28px 40px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+    }
+    .calc-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .calc-subtitle { font-size: 12px; color: var(--text-muted); }
+    .calc-subtitle span { color: var(--gold); font-weight: 700; }
+
+    .tdc-btn { font-family:'Urbanist',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.04em; color:var(--gold); background:var(--gold-dim); border:1px solid var(--gold-border); border-radius:999px; padding:2px 8px; cursor:pointer; line-height:1.4; white-space:nowrap; }
+    .tdc-btn:hover:not(:disabled) { border-color: var(--gold); }
+    .tdc-btn:disabled { opacity:0.6; cursor:wait; }
+    .tdc-btn.ghost { color:var(--text-muted); background:transparent; border-color:var(--black-4); }
+    .tdc-wrap {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--black-3); border: 1px solid var(--gold-border);
+      border-radius: 12px; padding: 10px 16px;
+    }
+    .tdc-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+    .tdc-input {
+      background: none; border: none; outline: none;
+      font-family: 'Urbanist', sans-serif; font-size: 20px; font-weight: 800;
+      color: var(--gold); width: 120px; text-align: right;
+    }
+    .tdc-suffix { font-size: 11px; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+
+    .calc-body { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+    @media(max-width:768px){ .calc-body { grid-template-columns: minmax(0,1fr); } }
+    @media(max-width:480px){ .result-row-top { flex-wrap: wrap !important; } .result-row-top > div:first-child { flex: 1 1 100% !important; } .result-amounts { text-align: left !important; width: 100%; } .tdc-wrap { flex-wrap: wrap; } }
+
+    .calc-left { padding: 36px 40px; border-right: 1px solid var(--black-4); }
+    .calc-right { padding: 36px 40px; }
+    @media(max-width:768px){ .calc-left { border-right: none; border-bottom: 1px solid var(--black-4); } }
+
+    .calc-section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 24px;
+    }
+
+    .input-group { margin-bottom: 22px; }
+    .input-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--text-secondary); display: block; margin-bottom: 8px;
+    }
+    .input-row { display: flex; align-items: center; gap: 8px; }
+    .input-prefix { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+    .calc-input {
+      flex: 1; background: rgba(201,168,76,0.06); border: 1px solid var(--gold-border);
+      border-radius: 10px; padding: 12px 16px;
+      font-family: 'Urbanist', sans-serif; font-size: 16px; font-weight: 700;
+      color: var(--gold); outline: none; width: 100%; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .calc-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
+    .calc-input.blue { background: rgba(81,172,188,0.06); border-color: var(--pacific-border); color: var(--pacific); }
+    .calc-input.blue:focus { border-color: var(--pacific); box-shadow: 0 0 0 3px rgba(81,172,188,0.12); }
+    .input-suffix { font-size: 12px; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+    .input-hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; padding-left: 2px; }
+
+    /* Tier selector inside calc */
+    .tier-select-wrap { margin-bottom: 28px; }
+    .tier-select-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; display: block; }
+    .tier-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    @media(max-width:500px){ .tier-options { grid-template-columns: repeat(2,1fr); } }
+    .tier-opt {
+      background: var(--black-3); border: 1px solid var(--black-4);
+      border-radius: 10px; padding: 10px 8px; text-align: center;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tier-opt:hover { border-color: var(--gold-border); }
+    .tier-opt.selected { background: var(--gold-dim); border-color: var(--gold-border); }
+    .tier-opt-label { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .tier-opt.selected .tier-opt-label { color: var(--gold); }
+    .tier-opt-price { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+    .tier-opt.selected .tier-opt-price { color: var(--gold); }
+
+    /* Result rows */
+    .result-row {
+      background: var(--black-3); border: 1px solid var(--black-4);
+      border-radius: 12px; padding: 16px 20px; margin-bottom: 10px;
+    }
+    .result-row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: nowrap; }
+    .result-row-top > div:first-child { min-width: 0; flex: 1 1 0; }
+    .result-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+    .result-sub { font-size: 11px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .result-amounts { text-align: right; flex-shrink: 0; }
+    .result-mxn { font-size: 15px; font-weight: 800; color: var(--gold); line-height: 1; }
+    .result-usd { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .result-mes { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-top: 4px; }
+    .result-mxn.blue { color: var(--pacific); }
+    .result-mxn.green { color: var(--green); }
+    .result-mxn.red { color: var(--red); }
+
+    .result-total {
+      background: rgba(201,168,76,0.06); border: 1px solid var(--gold-border);
+      border-radius: 12px; padding: 18px 20px; margin-bottom: 10px;
+    }
+
+    .result-neto {
+      background: linear-gradient(135deg, rgba(201,168,76,0.12) 0%, rgba(74,188,160,0.06) 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: 16px; padding: 24px 20px; margin-top: 16px;
+    }
+    .neto-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .neto-main { font-size: 44px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
+    .neto-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    .roi-bar-wrap { margin-top: 18px; }
+    .roi-bar-top { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .roi-bar-label { font-size: 11px; color: var(--text-muted); }
+    .roi-pct { font-size: 11px; font-weight: 700; color: var(--green); }
+    .roi-track { height: 7px; background: var(--black-4); border-radius: 999px; overflow: hidden; }
+    .roi-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--gold), var(--green)); transition: width 0.8s cubic-bezier(0.22,1,0.36,1); width: 0%; }
+
+    /* Breakdown table */
+    .breakdown-table {
+      background: var(--black-3); border: 1px solid var(--black-4);
+      border-radius: 14px; overflow: hidden; margin-top: 28px;
+    }
+    .bt-header {
+      display: grid; grid-template-columns: 1fr 120px 120px 100px;
+      gap: 8px; padding: 12px 20px;
+      background: rgba(201,168,76,0.04); border-bottom: 1px solid var(--black-4);
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+    }
+    @media(max-width:600px){ .bt-header { display: none; } }
+    .bt-row {
+      display: grid; grid-template-columns: 1fr 120px 120px 100px;
+      gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--black-4);
+      font-size: 13px; align-items: center;
+      transition: background 0.2s;
+    }
+    @media(max-width:600px){ .bt-row { grid-template-columns: 1fr 1fr; } }
+    .bt-row:last-child { border-bottom: none; }
+    .bt-row:hover { background: rgba(201,168,76,0.03); }
+    .bt-name { font-weight: 600; }
+    .bt-val { font-weight: 700; text-align: right; }
+    .bt-val.gold { color: var(--gold); }
+    .bt-val.blue { color: var(--pacific); }
+    .bt-val.muted { color: var(--text-muted); font-weight: 500; }
+    .bt-row.bt-total {
+      background: rgba(201,168,76,0.05); border-top: 1px solid var(--gold-border);
+      font-size: 14px;
+    }
+
+    /* ── CTA ── */
+    .cta-section { background: var(--black-3); text-align: center; padding: 100px 24px; border-top: 1px solid var(--black-4); }
+    .cta-inner { max-width: 700px; margin: 0 auto; }
+    .cta-h { font-size: clamp(28px, 5vw, 52px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .cta-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 40px; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--gold); color: #0A0A0C;
+      font-size: 15px; font-weight: 800; letter-spacing: 0.04em;
+      padding: 16px 38px; border-radius: 999px; text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .cta-btn:hover { background: var(--gold-light); transform: scale(1.04); }
+    .cta-note { font-size: 12px; color: var(--text-muted); margin-top: 14px; }
+
+    footer {
+      text-align: center; padding: 30px;
+      border-top: 1px solid var(--black-4);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+
+
+    /* ── TOOLTIP ── */
+    .info-tooltip { position: relative; display: inline-flex; align-items: center; margin-left: 6px; vertical-align: middle; cursor: default; }
+    .info-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--black-4); border: 1px solid var(--gold-border);
+      color: var(--gold); font-size: 9px; font-weight: 800; font-style: italic;
+      line-height: 1; cursor: help;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .info-tooltip:hover .info-icon { background: var(--gold-dim); border-color: var(--gold); }
+    .tooltip-text {
+      visibility: hidden; opacity: 0;
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: var(--black-3); border: 1px solid var(--gold-border);
+      color: var(--text-secondary); font-size: 11px; font-weight: 500; font-style: normal;
+      line-height: 1.5; white-space: nowrap; padding: 8px 12px; border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      transition: opacity 0.2s; pointer-events: none; z-index: 200;
+    }
+    .tooltip-text::after {
+      content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: var(--gold-border);
+    }
+    .info-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+
+    /* ── TOOLTIP ── */
+    .info-tooltip { position: relative; display: inline-flex; align-items: center; margin-left: 6px; vertical-align: middle; cursor: default; }
+    .info-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--black-4); border: 1px solid var(--gold-border);
+      color: var(--gold); font-size: 9px; font-weight: 800; font-style: italic;
+      line-height: 1; cursor: help; transition: background 0.2s, border-color 0.2s;
+    }
+    .info-tooltip:hover .info-icon { background: var(--gold-dim); border-color: var(--gold); }
+    .tooltip-text {
+      visibility: hidden; opacity: 0;
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: var(--black-3); border: 1px solid var(--gold-border);
+      color: var(--text-secondary); font-size: 11px; font-weight: 500; font-style: normal;
+      line-height: 1.5; white-space: nowrap; padding: 8px 12px; border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      transition: opacity 0.2s; pointer-events: none; z-index: 200;
+    }
+    .tooltip-text::after {
+      content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: var(--gold-border);
+    }
+    .info-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+    /* inputs no spinner */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type=number] { -moz-appearance: textfield; }
+
+    /* slider */
+    .user-slider {
+      width: 100%; -webkit-appearance: none; appearance: none;
+      height: 6px; border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold) var(--pct,0%), var(--black-4) var(--pct,0%));
+      outline: none; cursor: pointer; margin-top: 12px;
+    }
+    .user-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--gold); border: 3px solid var(--black-2);
+      box-shadow: 0 2px 8px rgba(201,168,76,0.4);
+      cursor: grab; transition: transform 0.15s;
+    }
+    .user-slider::-webkit-slider-thumb:active { transform: scale(1.2); cursor: grabbing; }
+    .user-slider::-moz-range-thumb {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--gold); border: 3px solid var(--black-2); cursor: grab;
+    }
+
+    .lp-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; display: inline-block; }
+
+    /* Toggle switch */
+    .toggle-switch { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background: var(--black-4); border-radius: 999px;
+      transition: background 0.25s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--text-muted);
+      left: 3px; top: 3px;
+      transition: transform 0.25s, background 0.25s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: rgba(81,172,188,0.25); border: 1px solid var(--pacific-border); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--pacific); }
+
+    /* divider between sections */
+    .divider-line { border: none; border-top: 1px solid var(--black-4); }
+
+
+    @media(max-width:640px){
+      /* Larger tap targets */
+      .cta-btn { padding: 14px 28px; font-size: 14px; }
+      .ff-card, .tier-card { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+      /* Calculator inputs bigger on mobile */
+      .calc-input { font-size: 18px; padding: 14px 16px; }
+      /* Section headers */
+      .section-h { font-size: clamp(26px, 7vw, 40px); }
+      /* Hero h1 */
+      .hero h1 { font-size: clamp(38px, 10vw, 70px); }
+      /* Neto main number */
+      .neto-main { font-size: clamp(28px, 8vw, 44px); }
+    }
+    /* ══════════════════════════════════
+       RESPONSIVE MOBILE — added
+    ══════════════════════════════════ */
+
+    /* NAV mobile */
+    @media(max-width:768px){
+      nav {
+        padding: 12px 18px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .nav-logo { gap: 8px; }
+      /* Hide nav links on mobile, keep logos + pill */
+      .nav-links { display: none !important; }
+      nav > div:nth-child(2) { gap: 10px; }
+      .nav-pill { font-size: 9px; padding: 3px 9px; }
+    }
+
+    /* Hero card fixed width → fluid */
+    @media(max-width:480px){
+      .hero-card-wrap { width: 100%; padding: 0 8px; }
+      .hero-card { width: 100% !important; height: auto !important; padding: 22px 20px; }
+      .hero { padding: 100px 16px 60px; }
+      .hero-stats { gap: 10px; }
+      .hstat { padding: 14px 16px; }
+    }
+
+    /* All inline 2-col grids → 1 col on mobile */
+    @media(max-width:640px){
+      div[style*="grid-template-columns:1fr 1fr"],
+      div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+      }
+      /* Section padding */
+      .section { padding: 60px 16px; }
+      .section-inner { padding: 0; }
+      .calc-left, .calc-right { padding: 24px 20px; }
+      .calc-header { padding: 20px 20px; }
+      /* Breakdown table */
+      .bt-header { display: none; }
+      .bt-row { grid-template-columns: 1fr 1fr !important; gap: 4px; font-size:12px; padding: 10px 14px; }
+    }
+
+    /* Exec card */
+    @media(max-width:480px){
+      #exec-grid { flex-direction: column; align-items: center; }
+      .exec-card { max-width: 100% !important; width: 100% !important; }
+      .cta-section { padding: 60px 16px; }
+    }
+
+    /* FF grid */
+    @media(max-width:480px){
+      .ff-grid { grid-template-columns: 1fr !important; }
+    }
+
+    /* Tier grid already has media queries but reinforce */
+    @media(max-width:400px){
+      .tier-grid { grid-template-columns: 1fr !important; }
+    }
+
+    /* Hero wordmark separator on mobile */
+    @media(max-width:480px){
+      .nav-wordmark { font-size: 16px; }
+    }
+
+    /* Tooltip — show below on mobile */
+    @media(max-width:600px){
+      .tooltip-text { left: auto; right: 0; transform: none; }
+      .tooltip-text::after { left: auto; right: 10px; }
+    }
+
+    /* ══ MOBILE — comprehensive pass ══ */
+    @media(max-width:640px){
+
+      /* Esquema de Pagos button */
+      #pago_anual { padding: 10px 6px !important; }
+
+      /* FF grid in pricing section → 1 col */
+      .ff-grid[style*="repeat(3"] { grid-template-columns: 1fr !important; }
+
+      /* 3-col feature/benefit grids → 1 col */
+      div[style*="grid-template-columns:repeat(3,1fr)"],
+      div[style*="grid-template-columns: repeat(3, 1fr)"] {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Calc tier-opt buttons: keep 3-col but smaller text */
+      .tier-opt { padding: 10px 6px; }
+      .tier-opt-label { font-size: 9px; }
+      .tier-opt-price { font-size: 12px; }
+
+      /* Result rows — don't clip amounts */
+      .result-mxn { font-size: 13px !important; }
+      .result-usd  { font-size: 10px; }
+
+      /* Tier cards center */
+      #tc50, #tc80, #tc100 { margin: 0 auto; }
+
+      /* Hero stats wrap */
+      .hero-stats { flex-wrap: wrap; gap: 8px; }
+      .hstat { flex: 1 1 calc(50% - 8px); min-width: 120px; }
+
+      /* exec / CTA grid */
+      div[style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+
+      /* Breakdown table on mobile: show 2 cols (mes + usd), hide ano */
+      .bt-col-ano { display: none !important; }
+      .bt-row { grid-template-columns: 1fr 1fr !important; }
+    }
+
+    @media(max-width:400px){
+      /* FF calc buttons → 2 per row */
+      div[style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns: repeat(2,1fr) !important; }
+      /* Section h2 */
+      .section-h { font-size: clamp(22px, 8vw, 36px) !important; }
+    }
+      @media(max-width:768px){ .pay-grid { grid-template-columns: 1fr !important; } }
+  </style>
+</head>
+<body>
+
+<!-- ══ ACCESS GATE ══ -->
+<div id="access-gate" style="position:fixed;inset:0;z-index:9999;background:#0A0A0C;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div style="max-width:380px;width:100%;background:#141417;border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:36px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#C9A84C;margin-bottom:8px;">Jeeves · Propuesta Confidencial</div>
+    <div id="gate-title" style="font-size:18px;font-weight:800;color:#fff;margin-bottom:18px;">Esta propuesta está protegida</div>
+    <div id="gate-form">
+      <input id="gate-password" type="password" placeholder="Contraseña" autocomplete="off"
+        style="width:100%;box-sizing:border-box;background:#0A0A0C;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:12px 14px;color:#fff;font-size:14px;margin-bottom:12px;outline:none;">
+      <div id="gate-error" style="display:none;color:#E05555;font-size:12px;margin-bottom:10px;">Contraseña incorrecta. Intenta de nuevo.</div>
+      <button onclick="checkGatePassword()" type="button"
+        style="width:100%;background:linear-gradient(135deg,#C9A84C,#E0C87A);color:#0A0A0C;font-weight:800;font-size:13px;border:none;border-radius:8px;padding:12px;cursor:pointer;letter-spacing:0.03em;">Ingresar</button>
+      <div style="font-size:11px;color:#5A5755;margin-top:14px;">Vigente hasta el 11 de diciembre de 2026</div>
+    </div>
+    <div id="gate-expired" style="display:none;font-size:13px;color:#9A9AA3;line-height:1.5;">Esta propuesta ha expirado. Contacta a tu ejecutivo de cuenta en Jeeves para solicitar un enlace actualizado.</div>
+  </div>
+</div>
+<script>
+  (function() {
+    var GATE_PASSWORD = 'JeevesQ42026';
+    var EXPIRATION_DATE = new Date('2026-12-11T23:59:59-06:00');
+    var gate = document.getElementById('access-gate');
+
+    function unlock() {
+      gate.style.display = 'none';
+      var content = document.getElementById('proposal-content');
+      if (content) content.style.display = '';
+      try { sessionStorage.setItem('jeeves_gate_recicla_ambiente', '1'); } catch(e) {}
+      setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 50);
+    }
+
+    if (new Date() > EXPIRATION_DATE) {
+      document.getElementById('gate-title').textContent = 'Enlace expirado';
+      document.getElementById('gate-form').style.display = 'none';
+      document.getElementById('gate-expired').style.display = '';
+    } else {
+      var already = false;
+      try { already = sessionStorage.getItem('jeeves_gate_recicla_ambiente') === '1'; } catch(e) {}
+      if (already) document.addEventListener('DOMContentLoaded', unlock);
+    }
+
+    window.checkGatePassword = function() {
+      var val = document.getElementById('gate-password').value;
+      if (val === GATE_PASSWORD) { unlock(); }
+      else { document.getElementById('gate-error').style.display = ''; }
+    };
+    document.getElementById('gate-password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') window.checkGatePassword();
+    });
+  })();
+</script>
+
+<div id="proposal-content" style="display:none;">
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-logo">
+    <!-- Jeeves logo → tryjeeves.com -->
+    <a href="https://www.tryjeeves.com" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--gold);">
+      <svg width="32" height="32" viewBox="0 0 1590.21 1517.93" xmlns="http://www.w3.org/2000/svg">
+        <circle fill="#020202" cx="798.37" cy="759.62" r="659.19"/>
+        <path fill="#c1a464" d="M703.2,775.19h190.35l-27.93-210.47c68.69-6.56,137.38-13.12,206.08-19.68-46.52-49.28-93.05-98.56-139.57-147.85l-133.75,112.72-133.75-112.72c-46.52,49.28-93.05,98.56-139.57,147.85,68.69,6.56,137.38,13.12,206.08,19.68l-27.93,210.47Z"/>
+        <polygon fill="#c1a464" points="654.57 640.37 504.17 567.02 442.73 632.24 653.08 806.35 654.57 640.37"/>
+        <path fill="#c1a464" d="M775.18,907.85l-113.17-94.12-74.68,75.47c19.33,35.07,45.63,82.62,64.95,117.69,43.29-17.48,79.61-47.42,122.9-64.9v-34.14Z"/>
+        <path fill="#c1a464" d="M673.8,1045.36c5.31,19.79,10.63,39.59,15.94,59.38l26.95,17.3h163.36l26.95-17.3c5.31-19.79,10.63-39.59,15.94-59.38-41.52-9.7-83.05-19.4-124.57-29.09-41.52,9.7-83.05,19.4-124.57,29.09Z"/>
+        <polygon fill="#c1a464" points="943.66 806.35 1154.01 632.24 1092.57 567.02 942.17 640.37 943.66 806.35"/>
+        <path fill="#c1a464" d="M821.56,907.85v34.14c43.29,17.48,78.11,47.42,121.41,64.9,19.33-35.07,47.12-82.62,66.45-117.69l-74.68-75.47-113.17,94.12Z"/>
+      </svg>
+      <span class="nav-wordmark">Jeeves</span>
+    </a>
+    <span style="width:1px;height:24px;background:var(--black-4);display:inline-block;margin:0 16px;"></span>
+    <a href="https://reciclamexico.com.mx/" target="_blank" rel="noopener" title="Recicla Ambiente" style="display:inline-flex;align-items:center;text-decoration:none;"><img src="data:image/png;base64,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" alt="Recicla Ambiente" style="height:34px;width:auto;max-width:170px;object-fit:contain;border-radius:6px;display:block;"></a>
+  </div>
+  <div style="display:flex;align-items:center;gap:20px;">
+    <div class="nav-links" style="display:flex;gap:20px;">
+      <a href="#sec-hero" style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-muted)'">Tarjetas</a>
+      <a href="#sec-pay" style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;" onmouseover="this.style.color='var(--pacific)'" onmouseout="this.style.color='var(--text-muted)'">Pay</a>
+      <a href="#sec-control" style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-muted)'">Control</a>
+      <a href="#sec-contabilidad" style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-muted)'">Contable</a>
+      
+    </div>
+    <a href="#sec-calc" style="text-decoration:none;"><span class="nav-pill">Propuesta Jeeves</span></a>
+
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="sec-hero">
+  <div class="eyebrow reveal">Control total del gasto empresarial</div>
+  <h1 class="reveal">Tarjetas que<br><em>obedecen tus reglas.</em></h1>
+  <p class="hero-sub reveal">Crea, controla y monitorea cada tarjeta de tu empresa — por usuario, área o evento — con límites en tiempo real, visibilidad total y sin fricción.</p>
+
+  <div class="hero-card-wrap reveal">
+    <div class="hero-card">
+      <div class="hc-top">
+        <div class="hc-logo">
+          <svg width="20" height="20" viewBox="0 0 1590.21 1517.93" xmlns="http://www.w3.org/2000/svg">
+            <circle fill="#020202" cx="798.37" cy="759.62" r="659.19"/>
+            <path fill="#c1a464" d="M703.2,775.19h190.35l-27.93-210.47c68.69-6.56,137.38-13.12,206.08-19.68-46.52-49.28-93.05-98.56-139.57-147.85l-133.75,112.72-133.75-112.72c-46.52,49.28-93.05,98.56-139.57,147.85,68.69,6.56,137.38,13.12,206.08,19.68l-27.93,210.47Z"/>
+            <polygon fill="#c1a464" points="654.57 640.37 504.17 567.02 442.73 632.24 653.08 806.35 654.57 640.37"/>
+            <path fill="#c1a464" d="M775.18,907.85l-113.17-94.12-74.68,75.47c19.33,35.07,45.63,82.62,64.95,117.69,43.29-17.48,79.61-47.42,122.9-64.9v-34.14Z"/>
+            <path fill="#c1a464" d="M673.8,1045.36c5.31,19.79,10.63,39.59,15.94,59.38l26.95,17.3h163.36l26.95-17.3c5.31-19.79,10.63-39.59,15.94-59.38-41.52-9.7-83.05-19.4-124.57-29.09-41.52,9.7-83.05,19.4-124.57,29.09Z"/>
+            <polygon fill="#c1a464" points="943.66 806.35 1154.01 632.24 1092.57 567.02 942.17 640.37 943.66 806.35"/>
+            <path fill="#c1a464" d="M821.56,907.85v34.14c43.29,17.48,78.11,47.42,121.41,64.9,19.33-35.07,47.12-82.62,66.45-117.69l-74.68-75.47-113.17,94.12Z"/>
+          </svg>
+          <span class="hc-logo-text">JEEVES</span>
+        </div>
+        <div class="hc-tag">Activa ✦</div>
+      </div>
+      <div class="hc-chip"></div>
+      <div class="hc-num">•••• •••• •••• 4821</div>
+      <div class="hc-bottom">
+        <div>
+          <div class="hc-label-small">Titular</div>
+          <div class="hc-name" style="font-size:11px;letter-spacing:0.03em;">Cristina Sandoval</div>
+          <div class="hc-label-small" style="margin-top:2px;">Tesoreria · Recicla Ambiente</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hc-label-small">Límite mensual</div>
+          <div style="font-size:16px;font-weight:800;color:var(--gold);">$120,000 MXN</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Línea de crédito preaprobada -->
+  <div class="reveal" style="margin-top:-28px;margin-bottom:22px;">
+    <div style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(201,168,76,0.14) 0%,rgba(201,168,76,0.05) 100%);border:1px solid var(--gold-border);border-radius:16px;padding:16px 30px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-muted);">Línea de crédito preaprobada</div>
+      <div style="font-size:30px;font-weight:900;color:var(--gold);line-height:1.1;letter-spacing:-0.01em;">$2,000,000 <span style="font-size:14px;font-weight:700;opacity:0.8;">MXN</span></div>
+      <div style="font-size:11px;color:var(--text-muted);" id="credit_usd">—</div>
+      <div style="font-size:10px;color:var(--text-muted);font-style:italic;">(Sujeto a aprobación)</div>
+    </div>
+  </div>
+
+  <!-- WorldElite badge -->
+  <div class="reveal" style="margin-top:16px;margin-bottom:36px;">
+    <div style="display:inline-flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(201,168,76,0.10) 0%,rgba(201,168,76,0.04) 100%);border:1px solid var(--gold-border);border-radius:14px;padding:14px 24px;">
+      <div style="font-size:26px;">💳</div>
+      <div>
+        <div style="font-size:13px;font-weight:800;color:var(--gold);letter-spacing:0.04em;">Suscripción Platinum · 3 tarjetas WorldElite base incluidas</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Tarjetas adicionales: <strong style="color:var(--text-primary);"><span id="we_extra_mxn">—</span> MXN</strong> c/u <span style="font-size:10px;opacity:0.8;">(USD 200)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats reveal">
+    <div class="hstat"><div class="hstat-num">∞</div><div class="hstat-label">Tarjetas ilimitadas</div></div>
+    <div class="hstat"><div class="hstat-num">⚡</div><div class="hstat-label">Emisión instantánea</div></div>
+    <div class="hstat"><div class="hstat-num">150+</div><div class="hstat-label">Países aceptados</div></div>
+    <div class="hstat"><div class="hstat-num">0</div><div class="hstat-label">Sorpresas al mes</div></div>
+    <div class="hstat"><div class="hstat-num">150</div><div class="hstat-label">Users incluidos</div></div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Ver propuesta</span>
+    <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><path d="M8 3v10M3 8l5 5 5-5" stroke="#5A5755" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     SECCIÓN — PRECIOS POR TIER (MXN)
+══════════════════════════════════════ -->
+
+
+
+
+
+
+<!-- ══════════════════════════════════
+     SECCIÓN — JEEVES PAY
+══════════════════════════════════════ -->
+<section id="sec-pay" class="section" style="background:var(--black);">
+  <div class="section-inner">
+
+    <div class="reveal">
+      <div class="section-tag">① Jeeves Pay</div>
+      <h2 class="section-h">Paga a tus proveedores.<br><em style="font-style:normal;background:linear-gradient(135deg,var(--pacific),#7ecfde);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">37 días después.</em></h2>
+      <p class="section-sub">Envía dinero a crédito a proveedores nacionales e internacionales — y paga hasta 37 días después. Liquidez garantizada sin sacrificar relaciones comerciales.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;" class="reveal pay-grid">
+
+      <!-- Visual mockup -->
+      <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:20px;padding:32px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(81,172,188,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;">Pagos recientes</div>
+
+        <!-- Pay rows -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--black-3);border:1px solid var(--black-4);border-radius:12px;padding:14px 18px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--pacific-dim);border:1px solid var(--pacific-border);display:flex;align-items:center;justify-content:center;font-size:18px;">🏭</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;">Proveedor Nacional</div>
+              <div style="font-size:11px;color:var(--text-muted);">Transferencia local · SPEI</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:15px;font-weight:800;color:var(--gold);">$240,000</div>
+            <div style="font-size:10px;color:var(--green);font-weight:600;">Enviado ✓</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--black-3);border:1px solid var(--black-4);border-radius:12px;padding:14px 18px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--green-dim);border:1px solid rgba(74,188,160,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;">🌎</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;">Supplier USA</div>
+              <div style="font-size:11px;color:var(--text-muted);">Internacional · USD</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:15px;font-weight:800;color:var(--green);">$18,500</div>
+            <div style="font-size:10px;color:var(--green);font-weight:600;">Enviado ✓</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--black-3);border:1px solid var(--black-4);border-radius:12px;padding:14px 18px;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--amber-dim);border:1px solid rgba(212,145,74,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;">🇨🇳</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;">China Supplier</div>
+              <div style="font-size:11px;color:var(--text-muted);">Internacional · CNY</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:15px;font-weight:800;color:var(--amber);">$6,200</div>
+            <div style="font-size:10px;color:var(--green);font-weight:600;">Enviado ✓</div>
+          </div>
+        </div>
+
+        <!-- 37 días badge -->
+        <div style="background:linear-gradient(135deg,var(--pacific-dim),rgba(81,172,188,0.04));border:1px solid var(--pacific-border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:20px;">
+          <div style="font-size:52px;font-weight:900;color:var(--pacific);line-height:1;letter-spacing:-0.04em;">37</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text-primary);">días para pagar</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Tu flujo de caja, protegido.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="background:var(--black-2);border:1px solid var(--pacific-border);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:22px;margin-bottom:10px;">🌐</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Pagos internacionales</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">EE.UU., Brasil, China, México y más — desde una sola plataforma, sin intermediarios bancarios.</div>
+        </div>
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:22px;margin-bottom:10px;">⚡</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Pagos masivos en un clic</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Guarda proveedores y ejecuta múltiples pagos simultáneamente sin repetir el proceso.</div>
+        </div>
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:22px;margin-bottom:10px;">✅</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Aprobaciones configurables</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Por usuario, monto o proveedor — flujos de autorización a medida con doble firma opcional.</div>
+        </div>
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:22px;margin-bottom:10px;">💰</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Opening Fee único
+            <span class="info-tooltip">
+              <span class="info-icon">i</span>
+              <span class="tooltip-text">Únicamente en Jeeves Pay / Transferencias, Pago a Proveedores</span>
+            </span>
+          </div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;"><span style="color:var(--gold);font-weight:700;">Sin costo</span> al activar tu línea de Jeeves Pay — sin Opening Fee.</div>
+        </div>
+        <div style="background:var(--black-2);border:1px solid var(--pacific-border);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:22px;margin-bottom:10px;">📈</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Tasa de interés aprobada</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;"><span style="color:var(--pacific);font-weight:800;font-size:20px;">1.8%</span> mensual sobre lo que uses de tu línea de Jeeves Pay.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     SECCIÓN — PLATAFORMA DE CONTROL
+══════════════════════════════════════ -->
+<section id="sec-control" class="section" style="background:var(--black);">
+  <div class="section-inner">
+
+    <div class="reveal">
+      <div class="section-tag">② Plataforma de Control</div>
+      <h2 class="section-h">Visibilidad total<br><em style="font-style:normal;background:linear-gradient(135deg,var(--green),#7edad0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">del gasto corporativo.</em></h2>
+      <p class="section-sub">Manejo de equipos, límites de gasto y captura de recibos — todo en un solo panel. Tú decides quién gasta cuánto y cuándo.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;" class="reveal">
+
+      <!-- Visibilidad -->
+      <div style="background:var(--black-2);border:1px solid var(--pacific-border);border-radius:18px;padding:26px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(81,172,188,0.08) 0%,transparent 70%);"></div>
+        <div style="font-size:24px;margin-bottom:12px;">👁️</div>
+        <div style="font-size:14px;font-weight:800;color:var(--pacific);margin-bottom:12px;">Visibilidad Total</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Límites por tarjeta y usuario</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Transacciones en tiempo real</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Tarjetas activas y su estado</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Solicitudes pendientes</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Bloqueos y restricciones vigentes</li>
+        </ul>
+      </div>
+
+      <!-- Acciones admin -->
+      <div style="background:var(--black-2);border:1px solid var(--pacific-border);border-radius:18px;padding:26px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(81,172,188,0.08) 0%,transparent 70%);"></div>
+        <div style="font-size:24px;margin-bottom:12px;">🎛️</div>
+        <div style="font-size:14px;font-weight:800;color:var(--pacific);margin-bottom:12px;">Acciones del Admin</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Aprobar / rechazar solicitudes</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Modificar límites en tiempo real</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Congelar o cancelar tarjetas</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Restringir MCC o comercios</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--pacific);flex-shrink:0;"></span>Aprobar excepciones</li>
+        </ul>
+      </div>
+
+      <!-- Equipo financiero -->
+      <div style="background:var(--black-2);border:1px solid rgba(74,188,160,0.25);border-radius:18px;padding:26px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(74,188,160,0.08) 0%,transparent 70%);"></div>
+        <div style="font-size:24px;margin-bottom:12px;">📂</div>
+        <div style="font-size:14px;font-weight:800;color:var(--green);margin-bottom:12px;">Equipo Financiero</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>Validar comprobaciones</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>Conciliar movimientos</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>Monitorear cumplimiento de política</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>Descargar documentación fiscal</li>
+          <li style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>Gestionar reembolsos</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live dashboard strip -->
+    <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:18px;padding:28px 32px;" class="reveal">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(74,188,160,0.1);border:1px solid rgba(74,188,160,0.25);color:var(--green);padding:5px 12px;border-radius:999px;">
+          <span class="lp-dot"></span> En vivo · Tiempo real
+        </span>
+        <span style="font-size:13px;font-weight:700;">Límites de gasto — Mayo 2025</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">Ana Robles · RRHH</span><span style="font-size:12px;font-weight:700;"><span style="color:var(--gold);">$8,400</span><span style="color:var(--text-muted);"> / $15,000</span></span></div>
+          <div style="height:7px;background:var(--black-4);border-radius:999px;overflow:hidden;"><div style="height:100%;width:56%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width 1.5s cubic-bezier(0.22,1,0.36,1);"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">Equipo Marketing</span><span style="font-size:12px;font-weight:700;"><span style="color:var(--pacific);">$31,200</span><span style="color:var(--text-muted);"> / $60,000</span></span></div>
+          <div style="height:7px;background:var(--black-4);border-radius:999px;overflow:hidden;"><div style="height:100%;width:52%;border-radius:999px;background:linear-gradient(90deg,var(--pacific),#7ecfde);"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">Summit CDMX 2025</span><span style="font-size:12px;font-weight:700;"><span style="color:var(--amber);">$17,600</span><span style="color:var(--text-muted);"> / $20,000</span></span></div>
+          <div style="height:7px;background:var(--black-4);border-radius:999px;overflow:hidden;"><div style="height:100%;width:88%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#e0b060);"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">Carlos Vega · Ventas</span><span style="font-size:12px;font-weight:700;"><span style="color:var(--green);">$2,100</span><span style="color:var(--text-muted);"> / $10,000</span></span></div>
+          <div style="height:7px;background:var(--black-4);border-radius:999px;overflow:hidden;"><div style="height:100%;width:21%;border-radius:999px;background:linear-gradient(90deg,var(--green),#7edad0);"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     SECCIÓN — AUTOMATIZACIÓN CONTABLE
+══════════════════════════════════════ -->
+<section id="sec-contabilidad" class="section" style="background:var(--black-3);">
+  <div class="section-inner">
+
+    <div class="reveal">
+      <div class="section-tag">③ Automatización Contable</div>
+      <h2 class="section-h">Del ticket a la factura<br><em style="font-style:normal;background:linear-gradient(135deg,var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">en minutos.</em></h2>
+      <p class="section-sub">Reglas contables que se aplican solas. Mapeo GL, categorías e integraciones con tu ERP favorito — sin intervención manual.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;align-items:start;" class="reveal">
+
+      <!-- Left: Flujo visual -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+
+        <!-- FotoFacturas highlight -->
+        <div style="background:linear-gradient(135deg,rgba(81,172,188,0.08) 0%,rgba(81,172,188,0.03) 100%);border:1px solid var(--pacific-border);border-radius:16px;padding:22px 24px;display:flex;align-items:center;gap:16px;">
+          <div style="font-size:36px;flex-shrink:0;">📸</div>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--pacific);margin-bottom:4px;">FotoFacturas · IA</div>
+            <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">Fotografía el ticket → el sistema genera factura <strong style="color:var(--text-primary);">PDF y XML automáticamente</strong> y la asocia a la transacción.</div>
+          </div>
+        </div>
+
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:20px 22px;display:flex;align-items:flex-start;gap:14px;">
+          <div style="font-size:22px;flex-shrink:0;margin-top:2px;">🗺️</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Mapeo de código GL</div>
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Asignación automática de códigos contables por tipo de transacción, departamento o proveedor.</div>
+          </div>
+        </div>
+
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:20px 22px;display:flex;align-items:flex-start;gap:14px;">
+          <div style="font-size:22px;flex-shrink:0;margin-top:2px;">🏷️</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Categorización automática</div>
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Clasificación por tipo de gasto y centro de costo — sin etiquetado manual por el equipo.</div>
+          </div>
+        </div>
+
+        <!-- ERP integrations -->
+        <div style="background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:16px;padding:20px 22px;">
+          <div style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:14px;">🔗 Integraciones ERP</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:8px;padding:10px;text-align:center;font-size:11px;font-weight:700;color:var(--text-secondary);">⚡ NetSuite</div>
+            <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:8px;padding:10px;text-align:center;font-size:11px;font-weight:700;color:var(--text-secondary);">🔵 QuickBooks</div>
+            <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:8px;padding:10px;text-align:center;font-size:11px;font-weight:700;color:var(--text-secondary);">🔗 Jeeves API</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Métodos + beneficios -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:13px;font-weight:700;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;">📋 Métodos de comprobación</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;"></span><span style="font-size:13px;"><strong style="color:var(--text-primary);">Foto de ticket</strong><span style="color:var(--text-muted);"> — genera PDF/XML automáticamente</span></span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;"></span><span style="font-size:13px;"><strong style="color:var(--text-primary);">Carga manual</strong><span style="color:var(--text-muted);"> — facturas PDF y XML directas</span></span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;"></span><span style="font-size:13px;"><strong style="color:var(--text-primary);">Tickets digitales</strong><span style="color:var(--text-muted);"> — auto-genera factura</span></span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;"></span><span style="font-size:13px;"><strong style="color:var(--text-primary);">Notas y comprobantes</strong><span style="color:var(--text-muted);"> — escritos por el usuario</span></span></div>
+          </div>
+        </div>
+
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:22px;margin-bottom:10px;">📊</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Reportes a tu medida</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Exporta y filtra según tu modelo contable — sin trabajo manual, compatible con auditoría.</div>
+        </div>
+
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:22px;margin-bottom:10px;">🔄</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Sincronización automática</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Tus transacciones se reflejan en tu ERP sin intervención manual. Cierre contable fluido.</div>
+        </div>
+
+        <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:22px 24px;">
+          <div style="font-size:22px;margin-bottom:10px;">🧾</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Comprobación de gastos</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Adjunta comprobantes y cierra el ciclo contable desde la plataforma — sin correos ni papeles.</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     SECCIÓN — ECOSYSTEM OVERVIEW
+══════════════════════════════════════ -->
+<section class="section" style="background:var(--black);">
+  <div class="section-inner">
+
+    <div class="reveal" style="text-align:center;max-width:640px;margin:0 auto 56px;">
+      <div class="section-tag" style="display:inline-block;">El ecosistema completo</div>
+      <h2 class="section-h">Todo conectado.<br><em style="font-style:normal;background:linear-gradient(135deg,var(--gold),var(--pacific));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Un solo panel.</em></h2>
+      <p style="font-size:15px;color:var(--text-secondary);line-height:1.7;">Jeeves no es una tarjeta ni solo pagos. Es la plataforma financiera operativa que reemplaza cuatro herramientas distintas.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;" class="reveal">
+
+      <div style="background:var(--black-2);border:1px solid var(--gold-border);border-radius:16px;padding:24px 18px;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:14px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;">💳</div>
+        <div style="font-size:13px;font-weight:800;color:var(--gold);margin-bottom:6px;">Jeeves Card</div>
+        <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">Tarjetas corporativas ilimitadas con control total</div>
+      </div>
+
+      <div style="background:var(--black-2);border:1px solid var(--pacific-border);border-radius:16px;padding:24px 18px;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:14px;background:var(--pacific-dim);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;">🌐</div>
+        <div style="font-size:13px;font-weight:800;color:var(--pacific);margin-bottom:6px;">Jeeves Pay</div>
+        <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">Pagos a proveedores con 37 días de gracia</div>
+      </div>
+
+      <div style="background:var(--black-2);border:1px solid rgba(212,145,74,0.25);border-radius:16px;padding:24px 18px;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:14px;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;">⚡</div>
+        <div style="font-size:13px;font-weight:800;color:var(--amber);margin-bottom:6px;">Instant Pay</div>
+        <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">Pagos instantáneos con fondos propios</div>
+      </div>
+
+      <div style="background:var(--black-2);border:1px solid rgba(74,188,160,0.25);border-radius:16px;padding:24px 18px;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:14px;background:var(--green-dim);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;">🎛️</div>
+        <div style="font-size:13px;font-weight:800;color:var(--green);margin-bottom:6px;">Control</div>
+        <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">Visibilidad y gobierno del gasto en tiempo real</div>
+      </div>
+
+      <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:16px;padding:24px 18px;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(201,168,76,0.06);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;">🧾</div>
+        <div style="font-size:13px;font-weight:800;color:var(--text-secondary);margin-bottom:6px;">Contabilidad</div>
+        <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">Automatización GL, ERP y FotoFacturas</div>
+      </div>
+
+    </div>
+
+    <!-- Stats bar -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px;" class="reveal">
+      <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:14px;padding:22px;text-align:center;">
+        <div style="font-size:32px;font-weight:900;color:var(--gold);line-height:1;">150+</div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-top:5px;">Países aceptados</div>
+      </div>
+      <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:14px;padding:22px;text-align:center;">
+        <div style="font-size:32px;font-weight:900;color:var(--pacific);line-height:1;">37</div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-top:5px;">Días de liquidez Pay</div>
+      </div>
+      <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:14px;padding:22px;text-align:center;">
+        <div style="font-size:32px;font-weight:900;color:var(--green);line-height:1;">1%</div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-top:5px;">Cashback sin tope · 6 meses</div>
+      <div style="font-size:9px;color:var(--text-muted);margin-top:3px;opacity:0.7;">Aplica solo en tarjeta de crédito</div>
+      </div>
+      <div style="background:var(--black-2);border:1px solid var(--black-4);border-radius:14px;padding:22px;text-align:center;">
+        <div style="font-size:28px;font-weight:900;color:var(--amber);line-height:1;">0%</div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-top:5px;">de interés en uso de tarjetas</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+<!-- ══════════════════════════════════
+     SECCIÓN — CALCULADORA DINÁMICA
+══════════════════════════════════════ -->
+<section id="sec-calc" class="section" style="background:var(--black-3);">
+  <div class="section-inner">
+
+    <div class="reveal">
+      <div class="section-tag">④ Calculadora de Inversión</div>
+      <h2 class="section-h">Calcula tu costo<br><em style="font-style:normal;background:linear-gradient(135deg,var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">exacto anual.</em></h2>
+      <p class="section-sub">Ajusta los parámetros y visualiza en tiempo real cuánto invierte tu empresa en la plataforma Jeeves — en MXN y USD.</p>
+    </div>
+
+    <div class="calc-wrapper reveal">
+
+      <!-- Header with TDC -->
+      <div class="calc-header">
+        <div>
+          <div class="calc-title">💰 Calculadora de Inversión · México</div>
+          <div class="calc-subtitle">Celdas en <span>dorado</span> = valores editables · Todo se recalcula al instante</div>
+        </div>
+        <div class="tdc-wrap">
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            <div class="tdc-label">Tipo de cambio <span id="tdc-live-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-left:4px;vertical-align:middle;" title="Referencia XE de la propuesta"></span></div>
+            <a id="tdc-src" href="https://www.xe.com/es/currencyconverter/convert/?Amount=1&From=USD&To=MXN" target="_blank" rel="noopener" style="font-size:9px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);text-decoration:none;opacity:0.8;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">Referencia XE · 12 de noviembre de 2026 ↗</a>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;">
+              <button type="button" id="tdc-live-btn" class="tdc-btn" onclick="fetchTDC()">↻ Actualizar en vivo</button>
+              <button type="button" id="tdc-reset-btn" class="tdc-btn ghost" onclick="resetTDC()" style="display:none;">Volver al de la propuesta</button>
+            </div>
+          </div>
+          <input id="tdc" class="tdc-input" type="number" value="18.5" step="0.01" oninput="recalc()">
+          <div class="tdc-suffix">MXN / USD</div>
+        </div>
+      </div>
+
+      <div class="calc-body">
+
+        <!-- LEFT: Inputs -->
+        <div class="calc-left">
+          <div class="calc-section-label">📋 Configura tu empresa</div>
+
+          <!-- Usuarios -->
+          <div class="input-group">
+            <label class="input-label">Número de usuarios (tarjetas activas)
+              <span class="info-tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltip-text">Un usuario es un perfil de admin, finanzas, administrador de tarjeta, contador o empleado.</span>
+              </span>
+            </label>
+            <div class="input-row">
+              <input id="usuarios" class="calc-input" type="number" value="150" min="1" max="2000" oninput="syncSlider(); recalc()">
+              <span class="input-suffix">usuarios</span>
+            </div>
+            <input id="slider_usuarios" class="user-slider" type="range" min="38" max="300" value="150" oninput="syncInput(); recalc()">
+            <div class="input-hint" id="hint_tier"></div>
+          </div>
+
+          <!-- Descuento -->
+          <div class="input-group" id="descuento-group" style="display:none;">
+            <label class="input-label">Descuento negociado (%)</label>
+            <div class="input-row">
+              <input id="descuento" class="calc-input" type="number" value="0" min="0" max="50" step="1" oninput="recalc()">
+              <span class="input-suffix">%</span>
+            </div>
+            <div class="input-hint">Descuento aplicado sobre precio de tier</div>
+          </div>
+
+          <!-- FotoFacturas toggle -->
+          <div class="input-group">
+            <label class="input-label">Add-on FotoFacturas</label>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:4px;">
+<div class="tier-opt selected" id="ff_0" onclick="setFF(0)">
+                <div class="tier-opt-label">Sin add-ons</div>
+                <div class="tier-opt-price" id="ffo_0_p">$0</div>
+              </div>
+<div class="tier-opt" id="ff_300" onclick="setFF(300)">
+                <div class="tier-opt-label">300 FF</div>
+                <div class="tier-opt-price" id="ffo_300_p">$3,686</div>
+              </div>
+<div class="tier-opt" id="ff_500" onclick="setFF(500)">
+                <div class="tier-opt-label">500 FF</div>
+                <div class="tier-opt-price" id="ffo_500_p">$6,143</div>
+              </div>
+<div class="tier-opt" id="ff_800" onclick="setFF(800)">
+                <div class="tier-opt-label">800 FF</div>
+                <div class="tier-opt-price" id="ffo_800_p">$9,828</div>
+              </div>
+            </div>
+            <div class="input-hint">MXN / mes · <span class="ff-unit-mxn">—</span> MXN por factura <span style="font-size:10px;">(USD 0.50)</span> · calculado al tipo de cambio vigente</div>
+          </div>
+
+          <!-- Gasto tarjetas — Cashback (1) -->
+          <div style="border-top:1px solid var(--black-4);padding-top:22px;margin-top:4px;">
+            <div class="calc-section-label">💳 Gasto Corporativo Mensual (Cashback)</div>
+
+            <div class="input-group">
+              <label class="input-label">Gasto mensual en tarjetas (MXN)</label>
+              <div class="input-row">
+                <span class="input-prefix">$</span>
+                <input id="gasto_tarjetas" class="calc-input" type="number" value="1500000" step="10000" oninput="recalc()">
+                <span class="input-suffix">MXN/mes</span>
+              </div>
+              <div class="input-hint" id="hint_gasto_anual">Semestral: —</div>
+            </div>
+          </div>
+
+          <!-- CAPTURISTA savings (2) -->
+          <div id="cap_block" style="border-top:1px solid var(--black-4);padding-top:22px;margin-top:4px;">
+            <div class="calc-section-label">🧑‍💼 Ahorro por Automatización de Facturas</div>
+
+            <div class="input-group">
+              <label class="input-label">Sueldo capturista (MXN/mes)</label>
+              <div class="input-row">
+                <span class="input-prefix">$</span>
+                <input id="sueldo_cap" class="calc-input" type="number" value="25000" step="1000" oninput="recalc()">
+                <span class="input-suffix">MXN/mes</span>
+              </div>
+              <div class="input-hint">Costo mensual del capturista manual</div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Minutos por factura (captura manual)</label>
+              <div class="input-row">
+                <input id="min_factura" class="calc-input blue" type="number" value="8" step="1" min="1" oninput="recalc()">
+                <span class="input-suffix">min / factura</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Horas trabajadas al mes</label>
+              <div class="input-row">
+                <input id="horas_mes" class="calc-input blue" type="number" value="160" step="8" min="1" oninput="recalc()">
+                <span class="input-suffix">hrs / mes</span>
+              </div>
+              <div class="input-hint" id="hint_cap">Capacidad y costo por factura calculados automáticamente</div>
+            </div>
+          </div>
+
+          <!-- Cajero automático (3) -->
+          <div style="border-top:1px solid var(--black-4);padding-top:22px;margin-top:4px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="cajero_check" onchange="toggleCajero()">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="calc-section-label" style="margin-bottom:0;">🏧 Retiros en Cajero Automático</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">Activa si el cliente usa cajeros — calcula el ahorro por comisiones eliminadas</div>
+
+            <div id="cajero-fields" style="display:none;">
+              <div class="input-group">
+                <label class="input-label">Gasto mensual en retiros cajero (MXN)</label>
+                <div class="input-row">
+                  <span class="input-prefix">$</span>
+                  <input id="gasto_cajeros" class="calc-input blue" type="number" value="0" step="5000" oninput="recalc()">
+                  <span class="input-suffix">MXN/mes</span>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Comisión actual por retiro cajero (%)</label>
+                <div class="input-row">
+                  <input id="comision_caj" class="calc-input blue" type="number" value="0" step="0.1" min="0" max="10" oninput="recalc()">
+                  <span class="input-suffix">%</span>
+                </div>
+                <div class="input-hint">Jeeves elimina esta comisión → ahorro directo anual</div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <!-- RIGHT: Results -->
+        <div class="calc-right">
+          <div class="calc-section-label">✅ Resumen de Inversión Anual</div>
+
+          <!-- Platform cost — costo por usuario + Platform Fee juntos -->
+          <div class="result-row">
+            <div class="result-row-top">
+              <div>
+                <div class="result-name">Plataforma Jeeves</div>
+                <div class="result-sub" id="res_tier_label">— usuarios · + Platform Fee anual</div>
+              </div>
+              <div class="result-amounts">
+                <div class="result-mxn" id="res_plat_mxn">$0</div>
+                <div class="result-mes" id="res_plat_mes"></div>
+                <div class="result-usd" id="res_plat_usd">≈ USD 0 / año</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FotoFacturas cost — visible solo con addon -->
+          <div class="result-row" id="res_ff_row" style="display:none;">
+            <div class="result-row-top">
+              <div>
+                <div class="result-name">🧾 FotoFacturas Add-on</div>
+                <div class="result-sub" id="res_ff_label">Sin paquete adicional</div>
+              </div>
+              <div class="result-amounts">
+                <div class="result-mxn" id="res_ff_mxn">—</div>
+                <div class="result-mes" id="res_ff_mes"></div>
+                <div class="result-usd" id="res_ff_usd">—</div>
+              </div>
+            </div>
+          </div>
+
+          
+
+          <!-- Total investment -->
+          <div class="result-total">
+            <div class="result-row-top">
+              <div style="font-size:13px;font-weight:700;">💳 Total Inversión Plataforma</div>
+              <div class="result-amounts">
+                <div class="result-mxn" id="res_total_mxn" style="font-size:18px;">$0</div>
+                <div class="result-usd" id="res_total_usd">≈ USD 0 / año</div>
+              </div>
+            </div>
+            <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--black-4);text-align:right;font-size:13px;font-weight:700;color:var(--text-secondary);" id="res_total_mensual">$0 MXN / mes</div>
+          </div>
+
+          <!-- Savings separator -->
+          <div style="border-top:1px solid var(--black-4);margin:20px 0;"></div>
+          <div class="calc-section-label">🎁 Beneficios & Ahorros Estimados</div>
+
+          <!-- Cashback -->
+          <div class="result-row">
+            <div class="result-row-top">
+              <div>
+                <div class="result-name">Cashback 1% · 6 meses</div>
+                <div class="result-sub">Sobre gasto en tarjetas corporativas</div>
+              </div>
+              <div class="result-amounts">
+                <div class="result-mxn green" id="res_cb_mxn">$0</div>
+                <div class="result-mes" id="res_cb_mes"></div>
+                <div class="result-usd" id="res_cb_usd">≈ USD 0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Capturista savings -->
+          <div class="result-row" id="res_cap_row">
+            <div class="result-row-top">
+              <div>
+                <div class="result-name">Ahorro en recuperación de facturas</div>
+                <div class="result-sub" id="res_cap_sub">Horas ahorradas vs. captura manual</div>
+              </div>
+              <div class="result-amounts">
+                <div class="result-mxn green" id="res_cap_mxn">$0</div>
+                <div class="result-mes" id="res_cap_mes"></div>
+                <div class="result-usd" id="res_cap_usd">≈ USD 0</div>
+              </div>
+            </div>
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--black-4);font-size:11px;color:var(--text-muted);" id="res_cap_detail">—</div>
+          </div>
+
+          <!-- Cajero savings — oculto si comisión = 0 -->
+          <div class="result-row" id="res_caj_row" style="display:none;">
+            <div class="result-row-top">
+              <div>
+                <div class="result-name" id="res_caj_label">Ahorro comisiones cajero</div>
+                <div class="result-sub">Comisión eliminada × gasto anual</div>
+              </div>
+              <div class="result-amounts">
+                <div class="result-mxn green" id="res_caj_mxn">$0</div>
+                <div class="result-mes" id="res_caj_mes"></div>
+                <div class="result-usd" id="res_caj_usd">≈ USD 0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- NETO -->
+          <div class="result-neto">
+            <div class="neto-label">🏆 Inversión Neta Anual (Costo − Ahorros)</div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <div>
+                <div class="neto-main" id="res_neto_mxn" style="color:var(--gold);">$0 MXN</div>
+                <div class="neto-sub">/ año · incluye plataforma + add-ons − ahorros</div>
+                <div style="font-size:17px;font-weight:800;color:var(--text-secondary);margin-top:6px;" id="res_neto_mensual">$0 MXN / mes</div>
+              </div>
+              <div style="text-align:right;">
+                <div id="res_neto_usd" style="font-size:12px;font-weight:600;color:var(--text-muted);"></div>
+                <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">USD equivalente</div>
+              </div>
+            </div>
+            <div class="roi-bar-wrap">
+              <div class="roi-bar-top">
+                <span class="roi-bar-label">Retorno sobre inversión</span>
+                <span class="roi-pct" id="res_roi">—</span>
+              </div>
+              <div class="roi-track"><div class="roi-fill" id="roi_fill"></div></div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;font-size:10px;color:var(--text-muted);line-height:1.6;">
+            * Tipo de cambio configurable. El cashback aplica 6 meses. Los ahorros en cajeros son estimaciones basadas en comisiones actuales del mercado.
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:var(--gold);font-weight:600;letter-spacing:0.04em;">💡 Precio más IVA · Tipo de cambio de referencia</div>
+
+          <!-- Precio Competencia VS Jeeves -->
+          <div style="margin-top:14px;background:rgba(224,85,85,0.06);border:1px solid rgba(224,85,85,0.25);border-radius:12px;padding:18px 20px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--red);margin-bottom:14px;" id="comp_title">⚖️ Precio Competencia VS Jeeves · 150 usuarios</div>
+
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(224,85,85,0.15);">
+              <div style="font-size:12px;color:var(--text-secondary);">La competencia costaría (anual):</div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:20px;font-weight:900;color:var(--red);" id="comp_mxn">$0 MXN</div>
+                <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-top:3px;" id="comp_mes"></div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:2px;" id="comp_usd">≈ USD 37,012</div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(224,85,85,0.15);">
+              <div style="font-size:12px;color:var(--text-secondary);" id="jeeves_comp_label">Con Jeeves cuesta (anual):<div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Plataforma + add-ons − descuentos − ahorros</div></div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:20px;font-weight:900;color:var(--green);" id="jeeves_comp_mxn">$0 MXN</div>
+                <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-top:3px;" id="jeeves_comp_mes"></div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:2px;" id="jeeves_comp_usd">≈ USD 18,000</div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+              <div style="font-size:12px;font-weight:700;color:var(--text-primary);">💰 Ahorro con Jeeves:</div>
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="font-size:22px;font-weight:900;color:var(--green);" id="diff_comp_mxn">$0 MXN</div>
+                <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-top:3px;" id="diff_comp_mes"></div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:2px;" id="diff_comp_usd">≈ USD 6,000</div>
+                <div style="display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;background:rgba(74,188,160,0.12);border:1px solid rgba(74,188,160,0.3);font-size:12px;font-weight:800;color:var(--green);" id="diff_comp_pct">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div><!-- /calc-wrapper -->
+
+  </div>
+</section>
+
+
+
+<!-- ══ CTA ══ -->
+<section class="cta-section" id="sec-cta">
+  <div class="cta-inner">
+    <div class="eyebrow reveal">¿Listo para dar el siguiente paso?</div>
+    <h2 class="cta-h reveal">Contáctame.</h2>
+    <p class="cta-sub reveal">Estoy aquí para resolver todas tus dudas y continuar el proceso.</p>
+
+    <!-- Ejecutivo cards -->
+    <div id="exec-grid" class="reveal" style="display:flex;justify-content:center;gap:12px;margin-bottom:32px;text-align:left;">
+
+      <div class="exec-card selected" onclick="selectExec('Lluvia Lara','lluvialara@tryjeeves.com')" style="max-width:320px;width:100%;">
+        <div class="exec-avatar">LL</div>
+        <div class="exec-info">
+          <div class="exec-name">Lluvia Lara</div>
+          <div class="exec-role">AE · Jeeves México</div>
+        </div>
+        <div class="exec-check" style="background:var(--green);border-color:var(--green);color:#0A0A0C;box-shadow:0 0 8px rgba(74,188,160,0.4);">✓</div>
+      </div>
+
+    </div>
+
+    <!-- CTA Button -->
+    <button id="exec-btn" class="cta-btn reveal" onclick="openMail()" style="border:none;cursor:pointer;opacity:1;background:var(--gold);">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2z" stroke="#0A0A0C" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="#0A0A0C" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Contactar a Lluvia
+    </button>
+    <p class="cta-note reveal" id="exec-note">Se abrirá tu cliente de correo con un mensaje listo para Lluvia Lara · lluvialara@tryjeeves.com</p>
+  </div>
+</section>
+
+<style>
+  .exec-card {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--black-2); border: 1px solid var(--black-4);
+    border-radius: 14px; padding: 14px 16px;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .exec-card:hover { border-color: var(--gold-border); transform: translateY(-2px); }
+  .exec-card.selected { border-color: var(--gold-border); background: var(--gold-dim); }
+  .exec-avatar {
+    width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: #0A0A0C; letter-spacing: 0.04em;
+  }
+  .exec-info { flex: 1; }
+  .exec-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .exec-role { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .exec-check {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid var(--black-4); background: var(--black-3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; color: transparent;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .exec-card.selected .exec-check {
+    background: var(--green); border-color: var(--green);
+    color: #0A0A0C; box-shadow: 0 0 8px rgba(74,188,160,0.4);
+  }
+  #exec-btn:not([disabled]) { cursor: pointer; opacity: 1; }
+  #exec-btn:not([disabled]):hover { background: var(--gold-light) !important; transform: scale(1.04); }
+</style>
+
+<script>
+  var selectedExecName  = 'Lluvia Lara';
+  var selectedExecEmail = 'lluvialara@tryjeeves.com';
+
+  function selectExec(name, email) {
+    selectedExecName  = name;
+    selectedExecEmail = email;
+    document.querySelectorAll('.exec-card').forEach(function(c) { c.classList.remove('selected'); });
+    event.currentTarget.classList.add('selected');
+    var btn = document.getElementById('exec-btn');
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2z" stroke="#0A0A0C" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="#0A0A0C" stroke-width="1.5" stroke-linecap="round"/></svg> Contactar a ' + name.split(' ')[0];
+    document.getElementById('exec-note').textContent = 'Se abrirá tu cliente de correo con un mensaje listo para ' + name + ' · ' + email;
+  }
+
+  function openMail() {
+    var subject = encodeURIComponent('Propuesta Jeeves — Recicla Ambiente · Solicitud de información');
+    var body = encodeURIComponent(
+      'Hola,\n\n' +
+      'Revisé la propuesta comercial de Jeeves y me gustaría agendar una llamada para conocer más detalles sobre la plataforma.\n\n' +
+      'Quedo en espera de tu respuesta.\n\n' +
+      'Saludos,'
+    );
+    window.location.href = 'mailto:' + selectedExecEmail + '?subject=' + subject + '&body=' + body;
+  }
+</script>
+
+<footer>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <svg width="22" height="22" viewBox="0 0 1590.21 1517.93" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;opacity:0.4">
+        <circle fill="#5A5755" cx="798.37" cy="759.62" r="659.19"/>
+        <path fill="#9A9690" d="M703.2,775.19h190.35l-27.93-210.47c68.69-6.56,137.38-13.12,206.08-19.68-46.52-49.28-93.05-98.56-139.57-147.85l-133.75,112.72-133.75-112.72c-46.52,49.28-93.05,98.56-139.57,147.85,68.69,6.56,137.38,13.12,206.08,19.68l-27.93,210.47Z"/>
+        <polygon fill="#9A9690" points="654.57 640.37 504.17 567.02 442.73 632.24 653.08 806.35 654.57 640.37"/>
+        <path fill="#9A9690" d="M775.18,907.85l-113.17-94.12-74.68,75.47c19.33,35.07,45.63,82.62,64.95,117.69,43.29-17.48,79.61-47.42,122.9-64.9v-34.14Z"/>
+        <path fill="#9A9690" d="M673.8,1045.36c5.31,19.79,10.63,39.59,15.94,59.38l26.95,17.3h163.36l26.95-17.3c5.31-19.79,10.63-39.59,15.94-59.38-41.52-9.7-83.05-19.4-124.57-29.09-41.52,9.7-83.05,19.4-124.57,29.09Z"/>
+        <polygon fill="#9A9690" points="943.66 806.35 1154.01 632.24 1092.57 567.02 942.17 640.37 943.66 806.35"/>
+        <path fill="#9A9690" d="M821.56,907.85v34.14c43.29,17.48,78.11,47.42,121.41,64.9,19.33-35.07,47.12-82.62,66.45-117.69l-74.68-75.47-113.17,94.12Z"/>
+      </svg>
+      <span>Jeeves &nbsp;·&nbsp; tryjeeves.com &nbsp;·&nbsp; Propuesta Jeeves México</span>
+    </div>
+    <div style="width:40px;height:1px;background:var(--black-4);"></div>
+    <div style="font-size:10px;letter-spacing:0.14em;color:var(--text-muted);opacity:0.6;">
+      Made by <span style="color:var(--gold);font-weight:700;opacity:1;">Jesús Irigoyen (Solutions Engineer)</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ──────────────────────────────────
+//  PRICING DATA
+// ──────────────────────────────────
+// Estructura de precios — Recicla Ambiente
+var PRICING_TIERS = [
+  { min: 1, price: 10 }
+];
+function getPricePerUserUSD(users) {
+  for (var i = 0; i < PRICING_TIERS.length; i++) {
+    if (users >= PRICING_TIERS[i].min) return PRICING_TIERS[i].price;
+  }
+  return PRICING_TIERS[PRICING_TIERS.length - 1].price; // fallback: tier mínimo
+}
+var OPENING_FEE_LOCAL = 0; // Opening Fee de Jeeves Pay en moneda local (pago único)
+var CAP_ON = false; // ahorro por automatización de facturas activo
+var CB_PCT = 1; // % de cashback
+var CB_MONTHS_YEAR = 6; // meses de cashback dentro del primer año
+var CREDIT_LINE = 2000000; // línea de crédito preaprobada en moneda local
+var PRICING_MODE = 'mensual'; // 'usuarios' = precio por usuario · 'mensual' = mensualidad fija
+var MENSUALIDAD_MXN = 33400; // MXN al mes, incluye usuarios y plataforma
+var PLATFORM_FEE_ANNUAL_USD = 0; // Platform Fee anual fijo (USD), aparte del costo por usuario
+var COMPETENCIA_MXN_MES = 55000; // Costo mensual de la competencia en MXN (150 usuarios)
+var COMPETENCIA_MXN_POR_USUARIO_MES = COMPETENCIA_MXN_MES / 150;
+var selectedPaymentDiscount = 0;
+var FF_PACKAGES = {
+  300: { facturas: 300, desc: '300 FotoFacturas adicionales / mes' },
+  500: { facturas: 500, desc: '500 FotoFacturas adicionales / mes' },
+  800: { facturas: 800, desc: '800 FotoFacturas adicionales / mes' }
+};
+var WE_EXTRA_USD = 200; // USD por tarjeta WorldElite adicional
+var FF_PRICE_USD = 0.5; // USD por factura (se convierte a MXN con TDC en tiempo real)
+var FF_BASE_FACTURAS = 0;
+
+var selectedFF = 0; // 0 = Sin add-ons
+var customFF   = 0;
+
+// ──────────────────────────────────
+//  FORMATTERS
+// ──────────────────────────────────
+function fmxn(n) {
+  return (Math.round(n) < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function fusd(n) {
+  return (Math.round(n) < 0 ? '−' : '') + 'USD ' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function fmxnD(n) {
+  return '$' + n.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+// ──────────────────────────────────
+//  SLIDER SYNC
+// ──────────────────────────────────
+function syncSlider() {
+  var u = parseInt(document.getElementById('usuarios').value) || 1;
+  var s = document.getElementById('slider_usuarios');
+  var clamped = Math.min(Math.max(u, 38), 300);
+  s.value = clamped;
+  var pct = ((clamped - 38) / 262 * 100);
+  s.style.setProperty('--pct', pct + '%');
+}
+function syncInput() {
+  var v = parseInt(document.getElementById('slider_usuarios').value) || 1;
+  document.getElementById('usuarios').value = v;
+  var pct = ((v - 38) / 262 * 100);
+  document.getElementById('slider_usuarios').style.setProperty('--pct', pct + '%');
+}
+
+// ──────────────────────────────────
+//  PAYMENT SCHEME
+// ──────────────────────────────────
+var _activePaymentScheme = null;
+
+// Descuento de Pago Anual: 15% si hay 100 usuarios, 10% si hay menos de 100 (pero más de 50)
+function getPagoAnualDiscount(users) {
+  return users >= 100 ? 15 : 10;
+}
+
+function selectPayment(scheme) {
+  var users = parseInt(document.getElementById('usuarios').value) || 0;
+  // Toggle off if already selected
+  if (_activePaymentScheme === scheme) {
+    _activePaymentScheme = null;
+    selectedPaymentDiscount = 0;
+    var el0 = document.getElementById('pago_anual'); if (el0) el0.classList.remove('selected');
+    var hint = document.getElementById('pago_calc_hint');
+    if (hint) { hint.textContent = 'Selecciona el esquema para aplicar el descuento al total'; hint.style.color = ''; }
+    recalc();
+    return;
+  }
+
+  if (scheme !== 'anual') return;
+  var disc = getPagoAnualDiscount(users);
+  _activePaymentScheme = scheme;
+  selectedPaymentDiscount = disc;
+  var target = document.getElementById('pago_anual');
+  if (target) target.classList.add('selected');
+  var hint = document.getElementById('pago_calc_hint');
+  if (hint) { hint.textContent = '→ Pago Anual · ' + disc + '% OFF aplicado al total'; hint.style.color = 'var(--gold)'; }
+  recalc();
+}
+
+// ──────────────────────────────────
+//  FF SELECTION
+// ──────────────────────────────────
+function setFF(paq) {
+  selectedFF = paq;
+  customFF   = 0;
+  ['ff_0','ff_300','ff_500','ff_800'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.classList.remove('selected');
+  });
+  var map = {'0':'ff_0','300':'ff_300','500':'ff_500','800':'ff_800'};
+  var target = document.getElementById(map[String(paq)]);
+  if (target) target.classList.add('selected');
+  recalc();
+}
+function selectFF(paq) { setFF(paq); }
+
+function clearCustomFF() {
+  var inp = document.getElementById('ff_custom');
+  if (inp) inp.value = '';
+  var pr = document.getElementById('ff_custom_price');
+  if (pr) pr.textContent = '';
+  customFF = 0;
+}
+
+function applyCustomFF() {
+  var inp = document.getElementById('ff_custom');
+  var val = Math.max(0, parseInt(inp.value) || 0);
+  customFF   = val;
+  selectedFF = -1;
+  ['ff_0','ff_300','ff_500','ff_800'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.classList.remove('selected');
+  });
+  var tdc   = parseFloat(document.getElementById('tdc').value) || 17.55;
+  var tdcV  = parseFloat(document.getElementById('tdc').value) || 17.55;
+  var mxnMes = val * FF_PRICE_USD * tdcV;
+  var pr = document.getElementById('ff_custom_price');
+  if (pr) pr.textContent = val > 0 ? fmxn(mxnMes) + '/mes' : '';
+  recalc();
+}
+
+// ──────────────────────────────────
+//  HELPERS
+// ──────────────────────────────────
+function usd2(a) { return '≈ ' + fusd(a) + ' / año · ' + fusd(a / 12) + ' / mes'; }
+function setMes(id, mxnAno) { setText(id, fmxn(mxnAno / 12) + ' MXN / mes'); }
+function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function show(id) { var el = document.getElementById(id); if (el) el.style.display = ''; }
+function hide(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
+
+// ──────────────────────────────────
+//  MAIN RECALC
+// ──────────────────────────────────
+function recalc() {
+  var tdc      = parseFloat(document.getElementById('tdc').value) || 17.55;
+  var users    = parseInt(document.getElementById('usuarios').value) || 1;
+  var desc     = parseFloat(document.getElementById('descuento').value) || 0;
+  var gastoMes = parseFloat(document.getElementById('gasto_tarjetas').value) || 0;
+  var cajeroActivo = document.getElementById('cajero_check').checked;
+  var cajMes   = cajeroActivo ? (parseFloat(document.getElementById('gasto_cajeros').value) || 0) : 0;
+  var comCaj   = cajeroActivo ? (parseFloat(document.getElementById('comision_caj').value) || 0) : 0;
+  var sueldoRaw = document.getElementById('sueldo_cap').value;
+  var sueldoCap = sueldoRaw === '' ? 25000 : (parseFloat(sueldoRaw) || 0);
+  var minFact   = parseFloat(document.getElementById('min_factura').value) || 8;
+  var horasMes  = parseFloat(document.getElementById('horas_mes').value) || 160;
+
+  var pagoDisc  = 0; // Sin esquema de pagos
+
+  // Precio por usuario según tier (50 / 80 / 100 usuarios)
+  var priceUnitUSD = getPricePerUserUSD(users) * (1 - desc/100);
+  var usersAnoUSD  = priceUnitUSD * users * 12;
+  var usersAno     = usersAnoUSD * tdc;
+  var usersMes     = usersAno / 12;
+
+  // Platform Fee anual — fijo, desglosado aparte del costo por usuario
+  var platformFeeAnoUSD = PLATFORM_FEE_ANNUAL_USD;
+  var platformFeeAno    = platformFeeAnoUSD * tdc;
+  var platformFeeMes    = platformFeeAno / 12;
+
+  var platAnoUSD = usersAnoUSD + platformFeeAnoUSD;
+  var platAno    = usersAno    + platformFeeAno;
+  var platMes    = platAno / 12;
+  if (PRICING_MODE === 'mensual') { // mensualidad fija en pesos: sin desglose por usuario
+    platAno = MENSUALIDAD_MXN * 12; platAnoUSD = platAno / tdc; platMes = MENSUALIDAD_MXN;
+    usersAno = platAno; usersAnoUSD = platAnoUSD; usersMes = platMes;
+  }
+
+  // FF addon
+  var ffAddonFacturas = (function() {
+    if (selectedFF === -1) return customFF;
+    var pkg = FF_PACKAGES[selectedFF];
+    return (pkg && pkg.facturas) ? pkg.facturas : 0;
+  }());
+  var ffMes    = ffAddonFacturas * FF_PRICE_USD * tdc;
+  var ffAno    = ffMes * 12;
+  var ffAnoUSD = ffAno / tdc;
+
+  // Total before payment discount
+  var totalAnoBase    = platAno + ffAno;
+  var totalAnoUSDBase = platAnoUSD + ffAnoUSD;
+  // Opening Fee de Jeeves Pay: pago único, suma al total del primer año (no al mensual)
+  var openAno = OPENING_FEE_LOCAL;
+  totalAnoBase += openAno; totalAnoUSDBase += openAno / tdc;
+
+  // Payment discount
+  var pagoMult    = 1 - pagoDisc / 100;
+  var totalAno    = totalAnoBase    * pagoMult;
+  var totalAnoUSD = totalAnoUSDBase * pagoMult;
+  var totalMes    = (totalAno - openAno) / 12;
+
+  // Savings
+  var cbMXN = gastoMes * CB_PCT / 100 * CB_MONTHS_YEAR; // cashback según la opción elegida por el AE
+  var cbUSD = cbMXN / tdc;
+  var cajAno = cajMes * (comCaj/100) * 12;
+  var cajAnoUSD = cajAno / tdc;
+
+  // Capturista
+  var facturasTotal = 500 + ffAddonFacturas;
+  var costoHora = horasMes > 0 ? (sueldoCap / horasMes) : 0;
+  var horasCapMes = facturasTotal * (minFact / 60);
+  var ahorroCapMes = CAP_ON && sueldoCap > 0 ? Math.min(horasCapMes * costoHora, sueldoCap) : 0;
+  var ahorroCapAno = ahorroCapMes * 12;
+  var ahorroCapAnoUSD = ahorroCapAno / tdc;
+  var costoPorFactura = costoHora * (minFact / 60);
+  document.getElementById('hint_cap').textContent =
+    facturasTotal + ' facturas/mes · ' + fmxnD(costoPorFactura) + ' MXN/factura manual · ' +
+    horasCapMes.toFixed(1) + ' hrs ahorradas/mes';
+
+  // Neto & ROI
+  var totalSavings = cbMXN + cajAno + ahorroCapAno;
+  var netoAno    = totalAno - totalSavings;
+  var netoAnoUSD = netoAno / tdc;
+  var netoMes    = (netoAno - openAno) / 12;
+  var roi = totalAno > 0 ? (totalSavings / totalAno) * 100 : 0;
+
+  // ── Tier cards (50 / 80 / 100 usuarios)
+  var elT = document.getElementById('t100_mxn');
+  if (elT) elT.textContent = '$' + (PRICING_TIERS[0].price * tdc).toFixed(2);
+
+  // ── Hints
+  var hintTxt = '→ ' + users + ' usuarios × ' + fmxnD(priceUnitUSD * tdc) + ' MXN/mes (USD ' + priceUnitUSD.toFixed(2) + ')' +
+    (desc > 0 ? ' − ' + desc + '% dto.' : '') +
+    (pagoDisc > 0 ? ' · −' + pagoDisc + '% esquema pago' : '') +
+    (PLATFORM_FEE_ANNUAL_USD ? ' · + ' + fmxn(platformFeeAno) + ' MXN Platform Fee anual (USD ' + PLATFORM_FEE_ANNUAL_USD.toLocaleString('en-US') + ', aparte)' : '');
+  if (PRICING_MODE === 'mensual') hintTxt = 'Mensualidad fija: incluye ' + users + ' usuarios y la plataforma · ' + fmxn(MENSUALIDAD_MXN) + ' MXN / mes (' + fusd(MENSUALIDAD_MXN / tdc) + ')';
+  document.getElementById('hint_tier').textContent = hintTxt;
+  document.getElementById('hint_gasto_anual').textContent =
+    gastoMes > 0 ? 'Gasto en el periodo de cashback (' + CB_MONTHS_YEAR + ' meses): ' + fmxn(gastoMes * CB_MONTHS_YEAR) + ' MXN' : '';
+
+  // ── Results
+  var labelDisc = pagoDisc > 0 ? ' · −' + pagoDisc + '% pago anual' : '';
+  document.getElementById('res_tier_label').textContent = PRICING_MODE === 'mensual' ? 'Mensualidad · incluye ' + users + ' usuarios y la plataforma' : (users + ' usuarios × ' + fmxnD(priceUnitUSD * tdc) + ' MXN/mes' + (PLATFORM_FEE_ANNUAL_USD ? ' + ' + fmxn(platformFeeAno) + ' MXN Platform Fee anual' : '') + labelDisc);
+  setText('credit_usd', '≈ ' + fusd(CREDIT_LINE / tdc));
+  setText('mens_usd', '≈ ' + fusd(MENSUALIDAD_MXN / tdc) + ' / mes');
+  setText('pf_mxn', fmxn(platformFeeAno));
+  setText('we_extra_mxn', fmxn(WE_EXTRA_USD * tdc));
+  document.querySelectorAll('.ff-unit-mxn').forEach(function(el) { el.textContent = fmxnD(FF_PRICE_USD * tdc); });
+  setText('res_plat_mxn', fmxn(platAno) + ' MXN/año');
+  setText('res_plat_usd', usd2(platAnoUSD)); setMes('res_plat_mes', platAno);
+
+  // FF row
+  if (ffAddonFacturas > 0) {
+    show('res_ff_row');
+    var ffLabel = selectedFF === -1
+      ? ffAddonFacturas.toLocaleString('es-MX') + ' FotoFacturas personalizadas / mes'
+      : (FF_PACKAGES[selectedFF] ? FF_PACKAGES[selectedFF].desc : ffAddonFacturas + ' FF / mes');
+    document.getElementById('res_ff_label').textContent = ffLabel;
+    setText('res_ff_mxn', fmxn(ffAno) + ' MXN/año');
+    setText('res_ff_usd', usd2(ffAnoUSD)); setMes('res_ff_mes', ffAno);
+  } else { hide('res_ff_row'); }
+
+  // Payment discount row
+  if (pagoDisc > 0) {
+    show('res_pago_row');
+    setText('res_pago_label_val', pagoDisc + '% OFF (Pago Anual)');
+    setText('res_pago_mxn', '−' + fmxn(totalAnoBase - totalAno) + ' MXN/año');
+    setText('res_pago_usd', '−' + fusd(totalAnoUSDBase - totalAnoUSD) + ' / año');
+  } else { hide('res_pago_row'); }
+
+  setText('res_total_mxn', fmxn(totalAno) + ' MXN/año');
+  setText('res_total_usd', '≈ ' + fusd(totalAnoUSD) + ' / año · ' + fusd((totalAnoUSD - openAno / tdc) / 12) + ' / mes');
+  setText('res_total_mensual', fmxn(totalMes) + ' MXN / mes' + (openAno ? ' + Opening Fee único' : ''));
+  setText('res_open_usd', '≈ ' + fusd(openAno / tdc));
+
+  // Cashback
+  setText('res_cb_mxn', fmxn(cbMXN) + ' MXN/año'); setText('res_cb_mes', fmxn(cbMXN / Math.max(1, CB_MONTHS_YEAR)) + ' MXN / mes · primeros ' + CB_MONTHS_YEAR + (CB_MONTHS_YEAR === 1 ? ' mes' : ' meses'));
+  setText('res_cb_usd', '≈ ' + fusd(cbUSD) + ' / año · ' + fusd(cbUSD / Math.max(1, CB_MONTHS_YEAR)) + ' / mes');
+
+  // Cajero
+  if (cajeroActivo && cajAno > 0) {
+    show('res_caj_row');
+    document.getElementById('res_caj_label').textContent = 'Ahorro comisiones cajero (' + comCaj + '%)';
+    setText('res_caj_mxn', fmxn(cajAno) + ' MXN/año'); setMes('res_caj_mes', cajAno);
+    setText('res_caj_usd', usd2(cajAnoUSD));
+  } else { hide('res_caj_row'); }
+
+  // Capturista
+  setText('res_cap_mxn', fmxn(ahorroCapAno) + ' MXN/año'); setMes('res_cap_mes', ahorroCapAno);
+  setText('res_cap_usd', usd2(ahorroCapAnoUSD));
+  setText('res_cap_sub', facturasTotal + ' facturas/mes automatizadas vs. captura manual');
+  setText('res_cap_detail',
+    'Capturista: ' + fmxn(sueldoCap) + '/mes · ' + minFact + ' min/factura · ' +
+    horasCapMes.toFixed(1) + ' hrs ahorradas/mes · Costo manual evitado: ' + fmxn(ahorroCapAno) + '/año');
+
+  // Neto
+  var netoEl = document.getElementById('res_neto_mxn');
+  netoEl.textContent = fmxn(netoAno) + ' MXN';
+  netoEl.style.color = netoAno <= 0 ? 'var(--green)' : 'var(--gold)';
+  setText('res_neto_usd', '≈ ' + fusd(netoAnoUSD) + ' / año · ' + fusd((netoAnoUSD - openAno / tdc) / 12) + ' / mes');
+  setText('res_neto_mensual', fmxn(netoMes) + ' MXN / mes');
+
+  // ROI
+  var roiEl = document.getElementById('res_roi');
+  if (totalAno > 0 && totalSavings > 0) {
+    roiEl.textContent = roi.toFixed(0) + '% de retorno';
+    roiEl.style.color = roi >= 100 ? 'var(--green)' : 'var(--gold)';
+    document.getElementById('roi_fill').style.width = Math.min(roi, 100) + '%';
+  } else {
+    roiEl.textContent = '—';
+    document.getElementById('roi_fill').style.width = '0%';
+  }
+
+  // Breakdown (safe)
+  setText('bt_users_mes', fmxn(usersMes));
+  setText('bt_users_ano', fmxn(usersAno));
+  setText('bt_users_usd', fusd(usersAnoUSD));
+  setText('bt_plat_mes',  fmxn(platMes));
+  setText('bt_plat_ano',  fmxn(platAno));
+  setText('bt_plat_usd',  fusd(platAnoUSD));
+  setText('bt_cb_mes',    fmxn(gastoMes * CB_PCT / 100));
+  setText('bt_cb_ano',    '−' + fmxn(cbMXN));
+  setText('bt_cb_usd',    '−' + fusd(cbUSD));
+  setText('bt_neto_mes',  fmxn(netoMes));
+  setText('bt_neto_ano',  fmxn(netoAno));
+  setText('bt_neto_usd',  fusd(netoAnoUSD));
+
+  // ── Precio Competencia VS Jeeves (dinámico según usuarios seleccionados) ──
+  var competenciaAnoUSD = COMPETENCIA_MXN_POR_USUARIO_MES * users * 12 / tdc; // fijo en pesos, el USD se ajusta al TC
+  // Con Jeeves = (plataforma + add-ons − descuentos) − ahorros (cashback, facturas, cajero)
+  var jeevesPlatUSD = netoAnoUSD;
+  var diffCompUSD = competenciaAnoUSD - jeevesPlatUSD;
+  var diffCompPct = competenciaAnoUSD > 0 ? (diffCompUSD / competenciaAnoUSD) * 100 : 0;
+  setText('comp_title', '⚖️ Precio Competencia VS Jeeves · ' + users + ' usuarios');
+  setText('comp_mxn', fmxn(competenciaAnoUSD * tdc) + ' MXN/año'); setMes('comp_mes', competenciaAnoUSD * tdc);
+  setText('comp_usd', usd2(competenciaAnoUSD));
+  setText('jeeves_comp_mxn', fmxn(jeevesPlatUSD * tdc) + ' MXN/año'); setMes('jeeves_comp_mes', jeevesPlatUSD * tdc);
+  setText('jeeves_comp_usd', usd2(jeevesPlatUSD));
+  setText('diff_comp_mxn', fmxn(diffCompUSD * tdc) + ' MXN/año'); setMes('diff_comp_mes', diffCompUSD * tdc);
+  setText('diff_comp_usd', usd2(diffCompUSD));
+  setText('diff_comp_pct', diffCompPct.toFixed(0) + '% de ahorro vs competencia');
+
+  // FF package prices
+  var ffo0 = document.getElementById('ffo_0_p');
+  if (ffo0) ffo0.textContent = '$0';
+  [300, 500, 800].forEach(function(k) {
+    var usdMes  = k * FF_PRICE_USD;
+    var mxnMes  = usdMes * tdc;
+    var el = document.getElementById('ff'+k+'_mxn');
+    if (el) el.textContent = fmxn(mxnMes);
+    var elU = document.getElementById('ff'+k+'_usd');
+    if (elU) elU.textContent = '≈ USD ' + Math.round(usdMes * 12).toLocaleString('en-US') + '/año';
+    var elP = document.getElementById('ffo_'+k+'_p');
+    if (elP) elP.textContent = fmxn(mxnMes) + '/mes';
+  });
+} // end recalc
+
+
+function toggleCajero() {
+  var checked = document.getElementById('cajero_check').checked;
+  document.getElementById('cajero-fields').style.display = checked ? '' : 'none';
+  setTimeout(recalc, 0);
+}
+
+// ── Scroll reveals ──
+var reveals = document.querySelectorAll('.reveal');
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) {
+    if (e.isIntersecting) {
+      setTimeout(function() { e.target.classList.add('visible'); }, i * 70);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(function(el) { obs.observe(el); });
+
+// ── Init ──
+if (PRICING_MODE === 'mensual') { var uIn = document.getElementById('usuarios'); uIn.readOnly = true; uIn.title = 'Incluidos en la mensualidad'; var sl = document.getElementById('slider_usuarios'); if (sl) sl.style.display = 'none'; }
+if (!CAP_ON) { ['cap_block', 'res_cap_row'].forEach(function (id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
+setFF(0);
+syncSlider();
+recalc();
+
+// ── Tipo de cambio en tiempo real — multi-fuente con caché ──────────────────
+// Tipo de cambio: la propuesta usa la referencia XE que capturó el AE; el cliente puede actualizarlo en vivo con el botón.
+var TDC_PROPUESTA = 18.5;
+var TDC_FECHA = '12 de noviembre de 2026';
+function resetTDC() {
+  document.getElementById('tdc').value = TDC_PROPUESTA;
+  var dot = document.getElementById('tdc-live-dot'); if (dot) { dot.style.background = 'var(--gold)'; dot.style.boxShadow = 'none'; dot.style.animation = 'none'; dot.title = 'Referencia XE de la propuesta'; }
+  document.getElementById('tdc-src').textContent = 'Referencia XE · ' + TDC_FECHA + ' ↗';
+  document.getElementById('tdc-reset-btn').style.display = 'none';
+  recalc();
+}
+function fetchTDC() {
+  var dot        = document.getElementById('tdc-live-dot');
+  var applied    = false;
+
+  // ── Marca el dot según estado ────────────────────────────────────────────
+  function markDot(state, title) {
+    if (!dot) return;
+    var styles = {
+      live:    { bg: 'var(--green)',  shadow: '0 0 6px rgba(74,188,160,0.6)', anim: 'pulse 1.5s infinite' },
+      cache:   { bg: 'var(--pacific)',shadow: '0 0 4px rgba(81,172,188,0.4)', anim: 'none' },
+      error:   { bg: 'var(--amber)',  shadow: 'none',                          anim: 'none' }
+    };
+    var s = styles[state] || styles.error;
+    dot.style.background  = s.bg;
+    dot.style.boxShadow   = s.shadow;
+    dot.style.animation   = s.anim;
+    dot.title             = title;
+  }
+
+  // ── Aplica la tasa al input y recalcula ──────────────────────────────────
+  var btn = document.getElementById('tdc-live-btn'), src = document.getElementById('tdc-src');
+  btn.disabled = true; btn.textContent = 'Actualizando…';
+  function applyRate(rate, source) {
+    if (applied) return;   // gana la primera fuente que responda
+    applied = true;
+    var rounded = Math.round(rate * 100) / 100;
+    document.getElementById('tdc').value = rounded;
+    var hora = new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    markDot('live', '🟢 En vivo · ' + rounded + ' MXN/USD · ' + source);
+    src.textContent = 'En vivo · ' + source + ' · ' + hora;
+    btn.disabled = false; btn.textContent = '↻ Actualizar en vivo';
+    document.getElementById('tdc-reset-btn').style.display = '';
+    recalc();
+  }
+
+  function markError() {
+    if (applied) return;
+    markDot('error', '⚠️ No se pudo actualizar — se mantiene el tipo de cambio actual');
+    src.textContent = 'No se pudo actualizar · se mantiene el actual';
+    btn.disabled = false; btn.textContent = '↻ Reintentar';
+  }
+
+  // ── Función genérica de fetch con timeout ────────────────────────────────
+  function fetchWithTimeout(url, timeoutMs) {
+    return new Promise(function(resolve, reject) {
+      var done = false;
+      var timer = setTimeout(function() {
+        if (!done) { done = true; reject(new Error('timeout')); }
+      }, timeoutMs || 4000);
+      fetch(url).then(function(r) {
+        if (!done) { done = true; clearTimeout(timer); resolve(r); }
+      }).catch(function(e) {
+        if (!done) { done = true; clearTimeout(timer); reject(e); }
+      });
+    });
+  }
+
+  // ── Fuentes en paralelo: gana la más rápida ──────────────────────────────
+  var sources = [
+    {
+      url:    'https://open.er-api.com/v6/latest/USD',
+      parse:  function(d) { return d && d.rates && d.rates.MXN; },
+      name:   'open.er-api.com'
+    },
+    {
+      url:    'https://api.frankfurter.app/latest?from=USD&to=MXN',
+      parse:  function(d) { return d && d.rates && d.rates.MXN; },
+      name:   'frankfurter.app'
+    },
+    {
+      url:    'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',
+      parse:  function(d) { return d && d.usd && d.usd.mxn; },
+      name:   'fawazahmed0-cdn'
+    },
+    {
+      url:    'https://api.exchangerate-api.com/v4/latest/USD',
+      parse:  function(d) { return d && d.rates && d.rates.MXN; },
+      name:   'exchangerate-api.com'
+    }
+  ];
+
+  // Lanza todas en paralelo; applyRate ignora respuestas tardías si ya hay vivo
+  sources.forEach(function(src) {
+    fetchWithTimeout(src.url, 5000)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var rate = src.parse(data);
+        if (rate && rate > 10 && rate < 50) {   // sanity check rango MXN
+          applyRate(rate, src.name, false);
+        }
+      })
+      .catch(function() {});  // silencio; otra fuente cubrirá
+  });
+
+  // ── Timeout final: si ninguna respondió en 6s, marcar error ─────────────
+  setTimeout(markError, 6000);
+}
+// Pre-select default exec card
+window.addEventListener('load', function() {
+  var card = document.querySelector('.exec-card');
+  if (card) { card.classList.add('selected'); }
+});
+</script>
+</div><!-- /proposal-content -->
+</body>
+</html>
